@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BetterSizing.cs" />
+    <Compile Include="Sizing.cs" />
     <Compile Include="MouseHandle.cs" />
     <Compile Include="MoveForm.cs" />
     <Compile Include="Resizer.cs" />

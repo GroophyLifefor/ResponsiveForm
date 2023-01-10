@@ -28,39 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node1");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node2");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node3");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node4");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Node5");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Node6");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Node8");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Node9");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Node10");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Node7", new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10});
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Node12");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Node14");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Node15");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Node13", new System.Windows.Forms.TreeNode[] {
-            treeNode13,
-            treeNode14});
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Node11", new System.Windows.Forms.TreeNode[] {
-            treeNode12,
-            treeNode15});
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Node2");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Node3");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Node4");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20});
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Node5");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Node6");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Node8");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Node9");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Node10");
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Node7", new System.Windows.Forms.TreeNode[] {
+            treeNode24,
+            treeNode25,
+            treeNode26});
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Node12");
+            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Node14");
+            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Node15");
+            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("Node13", new System.Windows.Forms.TreeNode[] {
+            treeNode29,
+            treeNode30});
+            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Node11", new System.Windows.Forms.TreeNode[] {
+            treeNode28,
+            treeNode31});
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -68,57 +62,18 @@
             this.button4 = new System.Windows.Forms.Button();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.menuStrip1.SuspendLayout();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.closeBtn = new System.Windows.Forms.Button();
+            this.maxBtn = new System.Windows.Forms.Button();
+            this.minBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.buildToolStripMenuItem,
-            this.helpToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1096, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
-            // 
-            // editToolStripMenuItem
-            // 
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.editToolStripMenuItem.Text = "Edit";
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // buildToolStripMenuItem
-            // 
-            this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
-            this.buildToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.buildToolStripMenuItem.Text = "Build";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(0, 27);
+            this.richTextBox1.Location = new System.Drawing.Point(0, 55);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(836, 474);
             this.richTextBox1.TabIndex = 1;
@@ -126,7 +81,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 507);
+            this.button1.Location = new System.Drawing.Point(12, 535);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -135,7 +90,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 536);
+            this.button2.Location = new System.Drawing.Point(12, 564);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 3;
@@ -144,7 +99,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(12, 565);
+            this.button3.Location = new System.Drawing.Point(12, 593);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 4;
@@ -153,7 +108,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(93, 507);
+            this.button4.Location = new System.Drawing.Point(93, 535);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 5;
@@ -162,61 +117,115 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(209, 565);
+            this.numericUpDown1.Location = new System.Drawing.Point(209, 593);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(169, 20);
             this.numericUpDown1.TabIndex = 6;
             // 
             // treeView1
             // 
-            this.treeView1.Location = new System.Drawing.Point(852, 40);
+            this.treeView1.Location = new System.Drawing.Point(852, 68);
             this.treeView1.Name = "treeView1";
-            treeNode1.Name = "Node1";
-            treeNode1.Text = "Node1";
-            treeNode2.Name = "Node2";
-            treeNode2.Text = "Node2";
-            treeNode3.Name = "Node3";
-            treeNode3.Text = "Node3";
-            treeNode4.Name = "Node4";
-            treeNode4.Text = "Node4";
-            treeNode5.Name = "Node0";
-            treeNode5.Text = "Node0";
-            treeNode6.Name = "Node5";
-            treeNode6.Text = "Node5";
-            treeNode7.Name = "Node6";
-            treeNode7.Text = "Node6";
-            treeNode8.Name = "Node8";
-            treeNode8.Text = "Node8";
-            treeNode9.Name = "Node9";
-            treeNode9.Text = "Node9";
-            treeNode10.Name = "Node10";
-            treeNode10.Text = "Node10";
-            treeNode11.Name = "Node7";
-            treeNode11.Text = "Node7";
-            treeNode12.Name = "Node12";
-            treeNode12.Text = "Node12";
-            treeNode13.Name = "Node14";
-            treeNode13.Text = "Node14";
-            treeNode14.Name = "Node15";
-            treeNode14.Text = "Node15";
-            treeNode15.Name = "Node13";
-            treeNode15.Text = "Node13";
-            treeNode16.Name = "Node11";
-            treeNode16.Text = "Node11";
+            treeNode17.Name = "Node1";
+            treeNode17.Text = "Node1";
+            treeNode18.Name = "Node2";
+            treeNode18.Text = "Node2";
+            treeNode19.Name = "Node3";
+            treeNode19.Text = "Node3";
+            treeNode20.Name = "Node4";
+            treeNode20.Text = "Node4";
+            treeNode21.Name = "Node0";
+            treeNode21.Text = "Node0";
+            treeNode22.Name = "Node5";
+            treeNode22.Text = "Node5";
+            treeNode23.Name = "Node6";
+            treeNode23.Text = "Node6";
+            treeNode24.Name = "Node8";
+            treeNode24.Text = "Node8";
+            treeNode25.Name = "Node9";
+            treeNode25.Text = "Node9";
+            treeNode26.Name = "Node10";
+            treeNode26.Text = "Node10";
+            treeNode27.Name = "Node7";
+            treeNode27.Text = "Node7";
+            treeNode28.Name = "Node12";
+            treeNode28.Text = "Node12";
+            treeNode29.Name = "Node14";
+            treeNode29.Text = "Node14";
+            treeNode30.Name = "Node15";
+            treeNode30.Text = "Node15";
+            treeNode31.Name = "Node13";
+            treeNode31.Text = "Node13";
+            treeNode32.Name = "Node11";
+            treeNode32.Text = "Node11";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode11,
-            treeNode16});
+            treeNode21,
+            treeNode22,
+            treeNode23,
+            treeNode27,
+            treeNode32});
             this.treeView1.Size = new System.Drawing.Size(232, 338);
             this.treeView1.TabIndex = 7;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.minBtn);
+            this.panel1.Controls.Add(this.maxBtn);
+            this.panel1.Controls.Add(this.closeBtn);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1096, 28);
+            this.panel1.TabIndex = 10;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Location = new System.Drawing.Point(0, 28);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1096, 24);
+            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // closeBtn
+            // 
+            this.closeBtn.BackColor = System.Drawing.Color.IndianRed;
+            this.closeBtn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.closeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.closeBtn.Location = new System.Drawing.Point(1021, 0);
+            this.closeBtn.Name = "closeBtn";
+            this.closeBtn.Size = new System.Drawing.Size(75, 28);
+            this.closeBtn.TabIndex = 0;
+            this.closeBtn.UseVisualStyleBackColor = false;
+            // 
+            // maxBtn
+            // 
+            this.maxBtn.BackColor = System.Drawing.Color.Moccasin;
+            this.maxBtn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.maxBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.maxBtn.Location = new System.Drawing.Point(946, 0);
+            this.maxBtn.Name = "maxBtn";
+            this.maxBtn.Size = new System.Drawing.Size(75, 28);
+            this.maxBtn.TabIndex = 1;
+            this.maxBtn.UseVisualStyleBackColor = false;
+            // 
+            // minBtn
+            // 
+            this.minBtn.BackColor = System.Drawing.Color.SeaGreen;
+            this.minBtn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.minBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.minBtn.Location = new System.Drawing.Point(871, 0);
+            this.minBtn.Name = "minBtn";
+            this.minBtn.Size = new System.Drawing.Size(75, 28);
+            this.minBtn.TabIndex = 2;
+            this.minBtn.UseVisualStyleBackColor = false;
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1096, 648);
+            this.ClientSize = new System.Drawing.Size(1096, 673);
+            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.button4);
@@ -224,27 +233,18 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form2";
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
@@ -252,5 +252,10 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button minBtn;
+        private System.Windows.Forms.Button maxBtn;
+        private System.Windows.Forms.Button closeBtn;
+        private System.Windows.Forms.MenuStrip menuStrip1;
     }
 }

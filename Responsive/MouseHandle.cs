@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using H.Hooks;
 
 namespace Responsive
@@ -19,7 +20,9 @@ namespace Responsive
 
             //Configure delegates
             mouseHook.Down += (sender, _) => { downPosition = _.Position; isDownMove = true; };
-            mouseHook.Up += (sender, _) => { downPosition = Point.Empty; isDownMove = false; };
+            mouseHook.Up += (sender, _) => { downPosition = Point.Empty; isDownMove = false; 
+                Cursor.Current = Cursors.Default; 
+            };
 
             //Start it
             mouseHook.Start();
@@ -30,6 +33,10 @@ namespace Responsive
         {
             while (isDownRulesRunning) { }
             DownRules.Add(action);
+        }
+        public static void addUpRule(Action action)
+        {
+            UpRules.Add(action);
         }
         public static void addRule(Action<Point> action)
         {
@@ -49,6 +56,10 @@ namespace Responsive
                     for (int i = 0; i < DownRules.Count; i++) DownRules[i](downPosition, lpPoint);
                     isRulesRunning = false;
                 }
+                else if (isUp)
+                {
+                    for (int i = 0; i < UpRules.Count; i++) UpRules[i]();
+                }
                 else // every moment
                 {
                     isRulesRunning = true;
@@ -59,11 +70,13 @@ namespace Responsive
         }
 
         static List<Action<Point, Point>> DownRules = new List<Action<Point, Point>>();
+        static List<Action> UpRules = new List<Action>();
         static bool isDownRulesRunning = false;
         static List<Action<Point>> Rules = new List<Action<Point>>();
         static bool isRulesRunning = false;
 
         static Point downPosition = Point.Empty;
         static bool isDownMove = false;
+        static bool isUp = false;
     }
 }

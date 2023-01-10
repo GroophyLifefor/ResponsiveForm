@@ -59,6 +59,12 @@ namespace Responsive
 
         private void Frm_SizeChanged(object sender, EventArgs e)
         {
+            if (sender is Form)
+            {
+                // Handle throw
+                if (((Form)sender).WindowState == FormWindowState.Minimized) return;
+            }
+
             double px = (double)((Control)sender).Width / (double)initWidth;
             double py = (double)((Control)sender).Height / (double)initHeigth;
 

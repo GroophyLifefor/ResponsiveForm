@@ -43,12 +43,17 @@ namespace Responsive
                 cntl.Size = size;
             };
         }
+        public void LoadMouseHook(Control mw) => LoadMouseHook(mw, new ResizeLimits());
 
         public void LoadMouseHook(Control mw, ResizeLimits limits)
         {
             frm = mw;
 
             MouseHandle.Init();
+            MouseHandle.addUpRule(new System.Action(() =>
+            {
+                frm.Size = frm.Size;
+            }));
             MouseHandle.addDownRule(delegate (Point downPosition, Point lpPoint)
             {
                 if (downPosition.X > frm.Location.X + frm.Size.Width - 8 &&
@@ -149,6 +154,28 @@ namespace Responsive
             });
             MouseHandle.addRule(delegate (Point lpPoint)
             {
+                if (lpPoint.X > frm.Location.X + frm.Size.Width - 8 &&
+                        lpPoint.X < frm.Location.X + frm.Size.Width + 2 &&
+                        lpPoint.Y > frm.Location.Y &&
+                        lpPoint.Y < frm.Location.Y + frm.Size.Height - 28) { }
+                else if (lpPoint.X > frm.Location.X &&
+                        lpPoint.X < frm.Location.X + frm.Size.Width - 28 &&
+                        lpPoint.Y > frm.Location.Y + frm.Size.Height - 8 &&
+                        lpPoint.Y < frm.Location.Y + frm.Size.Height + 2) { }
+                else if (lpPoint.X > frm.Location.X + frm.Size.Width - 28 &&
+                        lpPoint.X < frm.Location.X + frm.Size.Width &&
+                        lpPoint.Y > frm.Location.Y + frm.Size.Height - 28 &&
+                        lpPoint.Y < frm.Location.Y + frm.Size.Height) { }
+                else
+                {
+                    if (Cursor.Current == Cursors.SizeWE) TryChangeCursor(Cursors.Default);
+                    if (Cursor.Current == Cursors.SizeNS) TryChangeCursor(Cursors.Default);
+                    if (Cursor.Current == Cursors.SizeNWSE) TryChangeCursor(Cursors.Default);
+                }
+
+            });
+            MouseHandle.addRule(delegate (Point lpPoint)
+            {
                 if (isHorizontalResize)
                 {
                     isHorizontalResize = false;
@@ -173,7 +200,7 @@ namespace Responsive
             });
         }
 
-        public static void TryChangeCursor(Cursor cursor)
+        private static void TryChangeCursor(Cursor cursor)
         {
             for (int i = 0;i < 5;i++ )
             {

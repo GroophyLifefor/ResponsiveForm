@@ -32,22 +32,36 @@ namespace ResponsiveForm.Test
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            //Sizing sizing = new Sizing(this);
-            //sizing.CreateNewConnection(richTextBox1, menuStrip1, BetterSizing.MarginSection.Top);
-            //sizing.CreateNewConnection(button1, richTextBox1, BetterSizing.MarginSection.Top);
-            //sizing.CreateNewConnection(button2, button1, BetterSizing.MarginSection.Top);
-            //sizing.CreateNewConnection(button3, button2, BetterSizing.MarginSection.Top);
-            //sizing.CreateNewConnection(button4, richTextBox1, BetterSizing.MarginSection.Top);
-            //sizing.CreateNewConnection(button4, button1, BetterSizing.MarginSection.Left);
-            //sizing.CreateNewConnection(numericUpDown1, richTextBox1, BetterSizing.MarginSection.Top);
-            //sizing.CreateNewConnection(numericUpDown1, button3, BetterSizing.MarginSection.Left);
-            //sizing.CreateNewConnection(treeView1, richTextBox1, BetterSizing.MarginSection.Left);
-            //sizing.CreateNewConnection(treeView1, BetterSizing.MarginSection.Right);
-            //sizing.CreateNewConnection(richTextBox1, BetterSizing.MarginSection.Bottom);
-            //sizing.CreateNewConnection(button1, BetterSizing.MarginSection.Bottom);
-            //sizing.CreateNewConnection(button2, BetterSizing.MarginSection.Bottom);
-            //sizing.CreateNewConnection(button3, BetterSizing.MarginSection.Bottom);
-            //sizing.CreateNewConnection(button4, BetterSizing.MarginSection.Bottom);
+            Sizing sizing = new Sizing(this);
+            sizing.CreateNewConnection(richTextBox1, menuStrip1, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(button1, richTextBox1, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(button2, button1, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(button3, button2, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(button4, richTextBox1, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(button4, button1, Sizing.MarginSection.Left);
+            sizing.CreateNewConnection(numericUpDown1, richTextBox1, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(numericUpDown1, button3, Sizing.MarginSection.Left);
+            sizing.CreateNewConnection(treeView1, richTextBox1, Sizing.MarginSection.Left);
+            sizing.CreateNewConnection(treeView1, Sizing.MarginSection.Right);
+            sizing.CreateNewConnection(richTextBox1, Sizing.MarginSection.Bottom);
+            sizing.CreateNewConnection(button1, Sizing.MarginSection.Bottom);
+            sizing.CreateNewConnection(button2, Sizing.MarginSection.Bottom);
+            sizing.CreateNewConnection(button3, Sizing.MarginSection.Bottom);
+            sizing.CreateNewConnection(button4, Sizing.MarginSection.Bottom);
+
+            // MOVEFORM TO README
+            MoveForm moveForm = new MoveForm(this, panel1);
+            moveForm.LoadButtons(this, minBtn, maxBtn, closeBtn);
+
+            Resizer resizer = new Resizer();
+            resizer.LoadMouseHook(this);
+            //resizer.LoadResizeLimits(this, new Resizer.ResizeLimits()
+            //{
+            //    minWidth = 600,
+            //    minHeight = 500,
+            //    maxWidth = 1200,
+            //    maxHeight = 800
+            //});
         }
 
         void term()
