@@ -148,5 +148,10 @@ Some distortions occur and these distortions are corrected with minor resizes, m
 # Spotify Demo UI
 
 Made for just Responsive UI not able to play music or else.
+Some info about demo
+ -  minHeight = 680,
+    minWidth = 735
+ - Two Menubar reason of two color
+ - Two Sizing which `Form` and `PlaylistPanel` as (picture, state, name, author, time)
 
 ![finalspotify](https://user-images.githubusercontent.com/77299279/211758455-5dd65520-1d17-4a5e-9b7e-8d8614c72f9b.gif)
