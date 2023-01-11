@@ -144,3 +144,9 @@ Some distortions occur and these distortions are corrected with minor resizes, m
 # Final Project
 
 ![final](https://user-images.githubusercontent.com/77299279/211506900-f64ce7bb-f489-4622-9d88-00c71ff59e1f.gif)
+
+# Spotify Demo UI
+
+Made for just Responsive UI not able to play music or else.
+
+![finalspotify](https://user-images.githubusercontent.com/77299279/211758455-5dd65520-1d17-4a5e-9b7e-8d8614c72f9b.gif)
