@@ -39,7 +39,7 @@ namespace Responsive
                     section == MarginSection.Top
                         ? mainControl.Location.Y - (connectTo.Location.Y + connectTo.Size.Height)
                         : section == MarginSection.Right
-                            ? connectTo.Location.X - mainControl.Location.X
+                            ? connectTo.Location.X - (mainControl.Location.X + mainControl.Size.Width)
                             : section == MarginSection.Left
                                 ? mainControl.Location.X - (connectTo.Location.X + connectTo.Size.Width)
                                 : section == MarginSection.Bottom
@@ -50,6 +50,9 @@ namespace Responsive
             if (Rules.ContainsKey(mainControl)) Rules[mainControl].Add(item);
             else Rules.Add(mainControl, new List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>(new[] { item }));
         }
+
+        public void FixedWidth(Control control) => FixedWidthControls.Add(control);
+        public void FixedHeight(Control control) => FixedHeightControls.Add(control);
 
         public void CreateNewConnection(Control mainControl, MarginSection ConnectTo)
         {
@@ -79,7 +82,12 @@ namespace Responsive
                 {
                     customSizing[cntl].Invoke((((Control)sender), new Size(newWidth, newHeigth)));
                 }
-                else cntl.Size = new Size(newWidth, newHeigth);
+                else
+                {
+                    if (FixedWidthControls.Any(x => x == cntl)) newWidth = cntl.Size.Width;
+                    if (FixedHeightControls.Any(x => x == cntl)) newHeigth = cntl.Size.Height;
+                    cntl.Size = new Size(newWidth, newHeigth);
+                }
             }
 
             foreach (var rule in RulesToForm)
@@ -112,12 +120,12 @@ namespace Responsive
 
             foreach (var value in rule.Value)
             {
+                isLocated[control] = true;
                 if (!isLocated[value.connectTo]) reLocate(value.connectTo);
                     reLocatePerMargin(value, control.Size, ref newLoc);
             }
 
             control.Location = newLoc;
-            isLocated[control] = true;
         }
 
         private void reLocatePerMargin((Control connectTo, List<(MarginSection Section, int Distance)> values) value, Size size, ref Point newLoc)
@@ -172,6 +180,10 @@ namespace Responsive
 
         private List<Control> IgnoreControls { get; set; } = 
             new List<Control>();
+        private List<Control> FixedWidthControls { get; set; } =
+           new List<Control>();
+        private List<Control> FixedHeightControls { get; set; } =
+           new List<Control>();
 
         private Dictionary<Control, Action<(Control owner, Size CalculatedSize)>> customSizing { get; set; } = 
             new Dictionary<Control, Action<(Control owner, Size CalculatedSize)>>();

@@ -51,7 +51,7 @@ namespace ResponsiveForm.Test
 
             // MOVEFORM TO README
             MoveForm moveForm = new MoveForm(this, panel1);
-            moveForm.LoadButtons(this, minBtn, maxBtn, closeBtn);
+            moveForm.LoadButtons(minBtn, maxBtn, closeBtn);
 
             Resizer resizer = new Resizer();
             resizer.LoadMouseHook(this);

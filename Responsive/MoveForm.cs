@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Responsive
@@ -14,20 +15,25 @@ namespace Responsive
             panel.MouseUp += MouseUp;
         }
 
-        public void LoadButtons(Form MainForm, Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false)
+        public bool LoadButtons(Control mainForm, Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false) =>
+            LoadButtons(MinimalizeBtn, SizingChangeBtn, CloseBtn, JustHideFormWhenClose);
+
+        public bool LoadButtons(Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false)
         {
-            if (!(MinimalizeBtn is null)) MinimalizeBtn.Click += (s, e) => MainForm.WindowState = FormWindowState.Minimized;
+            if (frm is not Form) return false;
+            var _frm = frm as Form;
+            if (!(MinimalizeBtn is null)) MinimalizeBtn.Click += (s, e) => _frm.WindowState = FormWindowState.Minimized;
             if (!(SizingChangeBtn is null)) SizingChangeBtn.Click += (s, e) =>
             {
                 if (smoothResize)
                 {
-                    if (MainForm.WindowState == FormWindowState.Maximized)
+                    if (_frm.WindowState == FormWindowState.Maximized)
                     {
-                        var (maxLoc, maxSize) = (MainForm.Location, MainForm.Size);
-                        MainForm.WindowState = FormWindowState.Normal;
-                        var (loc, size) = (MainForm.Location, MainForm.Size);
-                        MainForm.Location = maxLoc;
-                        MainForm.Size = new Size(maxSize.Width - 1, maxSize.Height - 1);
+                        var (maxLoc, maxSize) = (_frm.Location, _frm.Size);
+                        _frm.WindowState = FormWindowState.Normal;
+                        var (loc, size) = (_frm.Location, _frm.Size);
+                        _frm.Location = maxLoc;
+                        _frm.Size = new Size(maxSize.Width - 1, maxSize.Height - 1);
                         int times = 10;
                         double[] X = GetGradiantNormalized(maxLoc.X, loc.X, times);
                         double[] Y = GetGradiantNormalized(maxLoc.Y, loc.Y, times);
@@ -35,18 +41,18 @@ namespace Responsive
                         double[] Height = GetGradiantNormalized(maxSize.Height, size.Height, times);
                         for (int i = 0;i < times; i++)
                         {
-                            MainForm.Location = new Point((int)X[i], (int)Y[i]);
-                            MainForm.Size = new Size((int)Width[i], (int)Height[i]);
+                            _frm.Location = new Point((int)X[i], (int)Y[i]);
+                            _frm.Size = new Size((int)Width[i], (int)Height[i]);
                         }
                     }
-                    else if (MainForm.WindowState == FormWindowState.Normal)
+                    else if (_frm.WindowState == FormWindowState.Normal)
                     {
-                        var (loc, size) = (MainForm.Location, MainForm.Size);
-                        MainForm.WindowState = FormWindowState.Maximized;
-                        var (maxLoc, maxSize) = (MainForm.Location, MainForm.Size);
-                        MainForm.WindowState = FormWindowState.Normal;
-                        MainForm.Location = maxLoc;
-                        MainForm.Size = new Size(maxSize.Width - 1, maxSize.Height - 1);
+                        var (loc, size) = (_frm.Location, _frm.Size);
+                        _frm.WindowState = FormWindowState.Maximized;
+                        var (maxLoc, maxSize) = (_frm.Location, _frm.Size);
+                        _frm.WindowState = FormWindowState.Normal;
+                        _frm.Location = maxLoc;
+                        _frm.Size = new Size(maxSize.Width - 1, maxSize.Height - 1);
                         int times = 10;
                         double[] X = GetGradiantSlowToFast(loc.X, maxLoc.X, times);
                         double[] Y = GetGradiantSlowToFast(loc.Y, maxLoc.Y, times);
@@ -54,22 +60,23 @@ namespace Responsive
                         double[] Height = GetGradiantSlowToFast(size.Height, maxSize.Height, times);
                         for (int i = 0; i < times; i++)
                         {
-                            MainForm.Location = new Point((int)X[i], (int)Y[i]);
-                            MainForm.Size = new Size((int)Width[i], (int)Height[i]);
+                            _frm.Location = new Point((int)X[i], (int)Y[i]);
+                            _frm.Size = new Size((int)Width[i], (int)Height[i]);
                         }
-                        MainForm.WindowState = FormWindowState.Maximized;
+                        _frm.WindowState = FormWindowState.Maximized;
                     }
                     return;
                 }
 
-                if (MainForm.WindowState == FormWindowState.Maximized) MainForm.WindowState = FormWindowState.Normal;
-                else if (MainForm.WindowState == FormWindowState.Normal) MainForm.WindowState = FormWindowState.Maximized;
+                if (_frm.WindowState == FormWindowState.Maximized) _frm.WindowState = FormWindowState.Normal;
+                else if (_frm.WindowState == FormWindowState.Normal) _frm.WindowState = FormWindowState.Maximized;
             };
             if (!(CloseBtn is null)) CloseBtn.Click += (s, e) =>
             {
-                if (JustHideFormWhenClose) MainForm.Hide();
+                if (JustHideFormWhenClose) _frm.Hide();
                 else Environment.Exit(0);
             };
+            return true;
         }
 
         //Thanks to my math teacher(Aybik hocam <3)

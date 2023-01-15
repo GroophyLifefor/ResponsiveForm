@@ -82,10 +82,11 @@
             // 
             // menubarButtons
             // 
+            this.menubarButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.menubarButtons.Image = global::ResponsiveForm.Test.SpotifySource.mb;
-            this.menubarButtons.Location = new System.Drawing.Point(1026, 0);
+            this.menubarButtons.Location = new System.Drawing.Point(1022, 0);
             this.menubarButtons.Name = "menubarButtons";
-            this.menubarButtons.Size = new System.Drawing.Size(132, 32);
+            this.menubarButtons.Size = new System.Drawing.Size(132, 46);
             this.menubarButtons.TabIndex = 3;
             this.menubarButtons.TabStop = false;
             // 

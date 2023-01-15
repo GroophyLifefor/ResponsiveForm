@@ -39,16 +39,9 @@ namespace ResponsiveForm.Test
             sizing.IgnoreControlWhenSizing(miniToolStrip);
 
             Resizer resizer = new Resizer();
-            //resizer.LoadResizeLimits(this, new Resizer.ResizeLimits()
-            //{
-            //    minWidth = 400,
-            //    minHeight = 400,
-            //    maxWidth = 800,
-            //    maxHeight = 800
-            //});
 
             MoveForm moveForm = new MoveForm(this, Menubar);
-            moveForm.LoadButtons(this, MinimalizeBtn, SizingChangeBtn, CloseBtn);
+            moveForm.LoadButtons(MinimalizeBtn, SizingChangeBtn, CloseBtn);
 
         }
 

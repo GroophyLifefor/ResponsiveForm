@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Responsive.Resizer;
 
 namespace ResponsiveForm.Test
 {
@@ -21,6 +22,9 @@ namespace ResponsiveForm.Test
 
         private void Spotify_Load(object sender, EventArgs e)
         {
+            DebugLogs debug = new DebugLogs();
+            Program.logs = debug;
+
             MoveForm moveForm1 = new MoveForm(this, RightMenuBar);
             MoveForm moveForm2 = new MoveForm(this, LeftMenuBar);
 
@@ -31,23 +35,20 @@ namespace ResponsiveForm.Test
                 minHeight = 680,
                 minWidth = 735
             });
+            //resizer.LoadRoundedBorders();
+            //resizer.DisableAutoRefresh();
 
             Sizing sizing = new Sizing(this);
             sizing.IgnoreControlWhenSizing(RightMenuBar);
             sizing.IgnoreControlWhenSizing(LeftMenuBar);
-            sizing.IgnoreControlWhenSizing(SideBar);
             sizing.CreateNewConnection(PlayBar, Sizing.MarginSection.Bottom);
             sizing.CreateNewConnection(PlaylistSongs, PlaylistPreviewPanel, Sizing.MarginSection.Top);
             sizing.CreateNewConnection(PlaylistSongs, Sizing.MarginSection.Right);
             sizing.CreateNewConnection(PlayBar, Sizing.MarginSection.Right);
             sizing.CreateNewConnection(PlaylistPreviewPanel, Sizing.MarginSection.Right);
             sizing.CreateNewConnection(PlayBar, PlaylistSongs, Sizing.MarginSection.Top);
-            this.SizeChanged += (s, _) =>
-            {
-                // For some reasons I'm not able to handle this two control
-                SideBar.Height = this.Height - LeftMenuBar.Height;
-                menubarButtons.Location = new Point(this.Width - menubarButtons.Size.Width + 2, 0);
-            };
+            sizing.CreateNewConnection(SideBar, RightMenuBar, Sizing.MarginSection.Top);
+            sizing.FixedWidth(SideBar);
 
             Sizing playlistPreviewSizing = new Sizing(PlaylistPreviewPanel);
             playlistPreviewSizing.CreateNewConnection(PlaylistTimePanel, playlistMainPanel, Sizing.MarginSection.Top);
@@ -80,6 +81,28 @@ namespace ResponsiveForm.Test
             {
                 Library.Image = SpotifySource.lib;
             };
+
+            //MouseHandle.addRule(delegate (Point lpPoint)
+            //{
+            //    bool isHorizontal = lpPoint.X > Location.X + Size.Width - 8 &&
+            //            lpPoint.X < Location.X + Size.Width + 2 &&
+            //            lpPoint.Y > Location.Y &&
+            //            lpPoint.Y < Location.Y + Size.Height - 28;
+            //    bool isVertical = lpPoint.X > Location.X &&
+            //            lpPoint.X < Location.X + Size.Width - 28 &&
+            //            lpPoint.Y > Location.Y + Size.Height - 8 &&
+            //            lpPoint.Y < Location.Y + Size.Height + 2;
+            //    bool isBoth = lpPoint.X > Location.X + Size.Width - 28 &&
+            //            lpPoint.X < Location.X + Size.Width &&
+            //            lpPoint.Y > Location.Y + Size.Height - 28 &&
+            //            lpPoint.Y < Location.Y + Size.Height;
+            //    DebugLogs.AddOrUpdateItem("isHorizontal", isHorizontal.ToString());
+            //    DebugLogs.AddOrUpdateItem("isVertical", isVertical.ToString());
+            //    DebugLogs.AddOrUpdateItem("isBoth", isBoth.ToString());
+            //    DebugLogs.AddOrUpdateItem("Cursor", GetCursor().ToString());
+            //    DebugLogs.AddOrUpdateItem("FrmSize", Size.ToString());
+            //    DebugLogs.AddOrUpdateItem("sw", resizer.controlsVisibilityTimer.Elapsed.TotalMilliseconds.ToString());
+            //});
         }
     }
 }

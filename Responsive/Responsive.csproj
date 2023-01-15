@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyboardHandle.cs" />
     <Compile Include="Sizing.cs" />
     <Compile Include="MouseHandle.cs" />
     <Compile Include="MoveForm.cs" />
