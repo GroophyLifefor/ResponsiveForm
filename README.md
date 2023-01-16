@@ -155,3 +155,5 @@ Some info about demo
  - Two Sizing which `Form` and `PlaylistPanel` as (picture, state, name, author, time)
 
 ![finalspotify](https://user-images.githubusercontent.com/77299279/211758455-5dd65520-1d17-4a5e-9b7e-8d8614c72f9b.gif)
+
+- Thanks to `JETBRAINS` and `MICROSOFT`!
