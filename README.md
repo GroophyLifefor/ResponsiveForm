@@ -2,6 +2,14 @@
 
 In many reason winforms are not responsive, so i felt compelled to do this.
 
+### NetFramework(like 4.8)
+
+```Copy .cs files in Responsive/```
+
+### Net(like NET5, NET6)
+
+```Install-Package Responsive```
+
 # Sizing (Responsive/Sizing.cs)
 
 ## Without Initalized.
