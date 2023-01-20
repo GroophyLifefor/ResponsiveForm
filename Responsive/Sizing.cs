@@ -1,16 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace Responsive
 {
+    public delegate void DebugItemChanged(object sender, string name, object value);
+    public delegate void Log(object sender, string log);
     public class Sizing
     {
+        public event DebugItemChanged debugItemChanged;
+        public event Log log;
+
+        private void ItemChanged(string name, object value)
+        {
+            if (debugItemChanged != null)
+            {
+                debugItemChanged(this, name, value);
+            }
+        }
+
+        private void Log(string logMessage)
+        {
+            if (log != null)
+            {
+                if (logQuery.Count > 0)
+                {
+                    foreach (var logm in logQuery)
+                    {
+                        log(this, logm);
+                    }
+                    logQuery.Clear();
+                }
+                log(this, logMessage);
+            }
+            else
+            {
+                logQuery.Add(logMessage);
+            }
+        }
+
         public enum MarginSection
         {
             Left,
@@ -19,16 +46,51 @@ namespace Responsive
             Bottom
         }
 
-        public Sizing(Control frm)
+        public Sizing(Control frm, int MenuBarHeight = 39)
         {
+            MoveForm.isThisControlHasMoveForm(frm, ref MenuBarHeight);
+            menuBarHeight = MenuBarHeight;
             initWidth = frm.Width;
-            initHeigth = frm.Height;
+            initHeigth = frm.Height - menuBarHeight;
+
             foreach (Control cntl in frm.Controls)
             {
                 sizeInits.Add(cntl, (cntl.Location, cntl.Size));
                 isLocated.Add(cntl, false);
             }
             frm.SizeChanged += Frm_SizeChanged;
+        }
+
+        public Sizing(Control frm, Control moveFormPanel)
+        {
+            menuBarHeight = moveFormPanel.Height;
+            initWidth = frm.Width;
+            initHeigth = frm.Height - menuBarHeight;
+            foreach (Control cntl in frm.Controls)
+            {
+                sizeInits.Add(cntl, (cntl.Location, cntl.Size));
+                isLocated.Add(cntl, false);
+            }
+            frm.SizeChanged += Frm_SizeChanged;
+        }
+
+        public Sizing(Control frm, MoveForm moveForm)
+        {
+            menuBarHeight = moveForm.panel.Height;
+            initWidth = frm.Width;
+            initHeigth = frm.Height - menuBarHeight;
+            foreach (Control cntl in frm.Controls)
+            {
+                sizeInits.Add(cntl, (cntl.Location, cntl.Size));
+                isLocated.Add(cntl, false);
+            }
+            frm.SizeChanged += Frm_SizeChanged;
+        }
+
+        public void DEBUG_GetInitSize()
+        {
+            ItemChanged("initWidth", initWidth);
+            ItemChanged("initHeigth", initHeigth);
         }
 
         public void CreateNewConnection(Control mainControl, Control connectTo, MarginSection section)
@@ -47,15 +109,28 @@ namespace Responsive
                                     : 0)
             }));
 
+            Log($"New connection from '{mainControl.Name}' to '{connectTo.Name}' as section '{section}'");
+
             if (Rules.ContainsKey(mainControl)) Rules[mainControl].Add(item);
             else Rules.Add(mainControl, new List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>(new[] { item }));
         }
 
-        public void FixedWidth(Control control) => FixedWidthControls.Add(control);
-        public void FixedHeight(Control control) => FixedHeightControls.Add(control);
+        public void FixedWidth(Control control)
+        {
+            FixedWidthControls.Add(control);
+            Log($"Sizing does not effect {control.Name}'s Width value.");
+
+        }
+        public void FixedHeight(Control control)
+        {
+            FixedHeightControls.Add(control);
+            Log($"Sizing does not effect {control.Name}'s Height value.");
+        }
 
         public void CreateNewConnection(Control mainControl, MarginSection ConnectTo)
         {
+            Log($"New connection from '{mainControl.Name}' to 'Form' as section '{ConnectTo}'");
+
             if (RulesToForm.ContainsKey(mainControl)) RulesToForm[mainControl].Add(ConnectTo);
             else RulesToForm.Add(mainControl, new List<MarginSection>(new MarginSection[] { ConnectTo }));
         }
@@ -69,7 +144,10 @@ namespace Responsive
             }
 
             double px = (double)((Control)sender).Width / (double)initWidth;
-            double py = (double)((Control)sender).Height / (double)initHeigth;
+            double py = (double)(((Control)sender).Height - menuBarHeight) / (double)initHeigth;
+
+            ItemChanged("PX", px);
+            ItemChanged("PY", py);
 
             foreach (Control cntl in ((Control)sender).Controls)
             {
@@ -88,11 +166,13 @@ namespace Responsive
                     if (FixedHeightControls.Any(x => x == cntl)) newHeigth = cntl.Size.Height;
                     cntl.Size = new Size(newWidth, newHeigth);
                 }
+                ItemChanged($"{cntl.Name}'s newSize", cntl.Size.ToString());
             }
 
             foreach (var rule in RulesToForm)
             {
                 reSizePerLockRule(rule.Key, rule.Value, (Control)sender);
+                Log($"Sizing '{rule.Key.Name}' as Form's ({string.Join(',', rule.Value)}) section.");
             }
 
             foreach (var rule in Rules)
@@ -121,8 +201,12 @@ namespace Responsive
             foreach (var value in rule.Value)
             {
                 isLocated[control] = true;
-                if (!isLocated[value.connectTo]) reLocate(value.connectTo);
-                    reLocatePerMargin(value, control.Size, ref newLoc);
+                if (!isLocated[value.connectTo])
+                {
+                    reLocate(value.connectTo);
+                }
+                reLocatePerMargin(value, control.Size, ref newLoc);
+                ItemChanged($"{control.Name}'s newLocation", control.Location.ToString());
             }
 
             control.Location = newLoc;
@@ -148,9 +232,19 @@ namespace Responsive
             foreach (var section in sections)
             {
                 if (section == MarginSection.Left)
-                { } // Left side already locked by defualt
+                {
+                    control.Location = new Point(
+                        sizeInits[control].loc.X,
+                        control.Location.Y
+                        );
+                }
                 if (section == MarginSection.Top)
-                { } // Top side already locked by defualt
+                {
+                    control.Location = new Point(
+                        control.Location.X,
+                        sizeInits[control].loc.Y
+                        );
+                }
                 if (section == MarginSection.Right)
                     control.Size = new Size(
                         control.Size.Width + ((mainForm.Size.Width - (control.Location.X + control.Size.Width)) - (initWidth - (sizeInits[control].loc.X + sizeInits[control].size.Width))),
@@ -159,17 +253,18 @@ namespace Responsive
                 if (section == MarginSection.Bottom)
                     control.Size = new Size(
                         control.Size.Width,
-                        control.Size.Height + ((mainForm.Size.Height - (control.Location.Y + control.Size.Height)) - (initHeigth - (sizeInits[control].loc.Y + sizeInits[control].size.Height)))
+                        control.Size.Height + (((mainForm.Size.Height - menuBarHeight) - (control.Location.Y + control.Size.Height)) - (initHeigth - (sizeInits[control].loc.Y + sizeInits[control].size.Height)))
                         );
             }
         }
 
         private int initWidth { get; set; }
         private int initHeigth { get; set; }
-        private Dictionary<Control, (Point loc,Size size)> sizeInits { get; set; } = 
+        private int menuBarHeight { get; set; }
+        private Dictionary<Control, (Point loc, Size size)> sizeInits { get; set; } =
             new Dictionary<Control, (Point loc, Size size)>();
 
-        private Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>> Rules = 
+        private Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>> Rules =
             new Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>>();
 
         private Dictionary<Control, List<MarginSection>> RulesToForm =
@@ -178,14 +273,16 @@ namespace Responsive
         private Dictionary<Control, bool> isLocated =
             new Dictionary<Control, bool>();
 
-        private List<Control> IgnoreControls { get; set; } = 
+        private List<Control> IgnoreControls { get; set; } =
             new List<Control>();
         private List<Control> FixedWidthControls { get; set; } =
            new List<Control>();
         private List<Control> FixedHeightControls { get; set; } =
            new List<Control>();
 
-        private Dictionary<Control, Action<(Control owner, Size CalculatedSize)>> customSizing { get; set; } = 
+        private Dictionary<Control, Action<(Control owner, Size CalculatedSize)>> customSizing { get; set; } =
             new Dictionary<Control, Action<(Control owner, Size CalculatedSize)>>();
+
+        private List<string> logQuery = new List<string>();
     }
 }

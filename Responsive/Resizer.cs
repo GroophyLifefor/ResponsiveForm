@@ -248,7 +248,7 @@ namespace Responsive
 
                 if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh)
                 {
-                    controlsVisibilityTimer.Stop();
+                    controlsVisibilityTimer.Reset();
                     ShowAllOfControls();
 
                 }
@@ -281,7 +281,7 @@ namespace Responsive
             alreadyShown = true;
         }
 
-        private static void TryChangeCursor(Cursor cursor)
+        private void TryChangeCursor(Cursor cursor)
         {
             for (int i = 0;i < 5;i++ )
             {
@@ -296,7 +296,7 @@ namespace Responsive
 
         public void LoadRoundedBorders()
         {
-            frm.SizeChanged += (_, __) => frm.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, frm.Width, frm.Height, 20, 20));
+            frm.SizeChanged += (_, __) => frm.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, frm.Width, frm.Height, 20, 20));
         }
 
         public enum CursorTypes
@@ -332,7 +332,7 @@ namespace Responsive
             Hand
         }
 
-        public static CursorTypes GetCursor()
+        public CursorTypes GetCursor()
         {
             CURSORINFO pci;
             pci.cbSize = Marshal.SizeOf(typeof(CURSORINFO));
@@ -404,10 +404,10 @@ namespace Responsive
             int nHeightEllipse // height of ellipse
         );
 
-        static Control frm { get; set; }
-        static bool isHorizontalResize { get; set; } = false;
-        static bool isVerticalResize { get; set; } = false;
-        static bool isFullResize { get; set; } = false;
+        Control frm { get; set; }
+        bool isHorizontalResize { get; set; } = false;
+        bool isVerticalResize { get; set; } = false;
+        bool isFullResize { get; set; } = false;
         private bool isResizerCursor = false;
         private Dictionary<Control, bool> visibilities { get; set; } = new Dictionary<Control, bool>();
         public Stopwatch controlsVisibilityTimer { get; set; } = new Stopwatch();

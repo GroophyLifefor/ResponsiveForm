@@ -7,12 +7,25 @@ namespace Responsive
 {
     public class MoveForm
     {
-        public MoveForm(Control form, Control panel)
+        public static bool isThisControlHasMoveForm(Control form, ref int menuBarHeight)
+        {
+            var has = isMoveFormed.Where(x => x.form == form);
+            if (has.Count() > 0)
+            {
+                menuBarHeight = has.First().menuBar.Height;
+                return true;
+            }
+            return false;
+        }
+
+        public MoveForm(Control form, Control Panel)
         {
             frm = form;
+            panel = Panel;
             panel.MouseDown += MouseDown;
             panel.MouseMove += MouseMove;
             panel.MouseUp += MouseUp;
+            isMoveFormed.Add((form, panel));
         }
 
         public bool LoadButtons(Control mainForm, Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false) =>
@@ -160,5 +173,7 @@ namespace Responsive
         private Point pontoinicial = new Point(0, 0);
         private Control frm;
         private bool smoothResize = false;
+        public Control panel;
+        private static List<(Control form, Control menuBar)> isMoveFormed = new List<(Control, Control)>();
     }
 }
