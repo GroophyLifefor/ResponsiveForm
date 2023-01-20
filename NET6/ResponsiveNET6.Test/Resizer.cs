@@ -6,11 +6,23 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static Syncfusion.WinForms.Core.NativePaint;
 
-namespace Responsive
+namespace ResponsiveNET6
 {
     public class Resizer
     {
+        public event DebugItemChanged debugItemChanged;
+
+        private void ItemChanged(string name, object value)
+        {
+            if (debugItemChanged != null)
+            {
+                debugItemChanged(this, name, value);
+            }
+        }
+
+
         public class ResizeLimits
         {
             public int minWidth { get; set; } = -1;
@@ -40,7 +52,7 @@ namespace Responsive
                 {
                     if (((Form)cntl).WindowState != FormWindowState.Normal) return;
                 }
-                
+
                 Size size = cntl.Size;
                 if (limits.isMinWidth && size.Width < limits.minWidth) size = new Size(limits.minWidth, size.Height);
                 if (limits.isMaxWidth && size.Width > limits.maxWidth) size = new Size(limits.maxWidth, size.Height);
@@ -49,8 +61,9 @@ namespace Responsive
                 cntl.Size = size;
             };
         }
-        public void LoadMouseHook(Control mw) => LoadMouseHook(mw, new ResizeLimits(), 100);
-        public void LoadMouseHook(Control mw, int msToRefresh) => LoadMouseHook(mw, new ResizeLimits(), msToRefresh);
+
+        public void LoadMouseHook(Control mw)                   => LoadMouseHook(mw, new ResizeLimits(), 100);
+        public void LoadMouseHook(Control mw, int msToRefresh)  => LoadMouseHook(mw, new ResizeLimits(), msToRefresh);
         public void LoadMouseHook(Control mw, ResizeLimits limits, int msToRefresh = 100)
         {
             frm = mw;
@@ -241,17 +254,17 @@ namespace Responsive
                 if (!isHorizontal && !isVertical && !isBoth && isResizerCursor)
                 {
                     TryChangeCursor(Cursors.Default);
-                    isHorizontalResize  =    false;
-                    isVerticalResize    =    false;
-                    isFullResize        =    false;
+                    isHorizontalResize = false;
+                    isVerticalResize = false;
+                    isFullResize = false;
                 }
 
                 if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh)
                 {
                     controlsVisibilityTimer.Reset();
                     ShowAllOfControls();
-
                 }
+
             });
             #endregion
         }
@@ -283,13 +296,15 @@ namespace Responsive
 
         private void TryChangeCursor(Cursor cursor)
         {
-            for (int i = 0;i < 5;i++ )
+            for (int i = 0; i < 5; i++)
             {
                 try
                 {
                     frm.Cursor = cursor;
                     break;
-                } catch {
+                }
+                catch
+                {
                 }
             }
         }
@@ -340,35 +355,35 @@ namespace Responsive
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
             var h = pci.hCursor;
-            if (h == Cursors.AppStarting.Handle)    return CursorTypes.AppStarting;
-            if (h == Cursors.Arrow.Handle)          return CursorTypes.Arrow;
-            if (h == Cursors.Cross.Handle)          return CursorTypes.Cross;
-            if (h == Cursors.Default.Handle)        return CursorTypes.Default;
-            if (h == Cursors.IBeam.Handle)          return CursorTypes.IBeam;
-            if (h == Cursors.No.Handle)             return CursorTypes.No;
-            if (h == Cursors.SizeAll.Handle)        return CursorTypes.SizeAll;
-            if (h == Cursors.SizeNESW.Handle)       return CursorTypes.SizeNESW;
-            if (h == Cursors.SizeNS.Handle)         return CursorTypes.SizeNS;
-            if (h == Cursors.SizeNWSE.Handle)       return CursorTypes.SizeNWSE;
-            if (h == Cursors.SizeWE.Handle)         return CursorTypes.SizeWE;
-            if (h == Cursors.UpArrow.Handle)        return CursorTypes.UpArrow;
-            if (h == Cursors.WaitCursor.Handle)     return CursorTypes.WaitCursor;
-            if (h == Cursors.Help.Handle)           return CursorTypes.Help;
-            if (h == Cursors.HSplit.Handle)         return CursorTypes.HSplit;
-            if (h == Cursors.VSplit.Handle)         return CursorTypes.VSplit;
-            if (h == Cursors.NoMove2D.Handle)       return CursorTypes.NoMove2D;
-            if (h == Cursors.NoMoveHoriz.Handle)    return CursorTypes.NoMoveHoriz;
-            if (h == Cursors.NoMoveVert.Handle)     return CursorTypes.NoMoveVert;
-            if (h == Cursors.PanEast.Handle)        return CursorTypes.PanEast;
-            if (h == Cursors.PanNE.Handle)          return CursorTypes.PanNE;
-            if (h == Cursors.PanNorth.Handle)       return CursorTypes.PanNorth;
-            if (h == Cursors.PanNW.Handle)          return CursorTypes.PanNW;
-            if (h == Cursors.PanSE.Handle)          return CursorTypes.PanSE;
-            if (h == Cursors.PanSouth.Handle)       return CursorTypes.PanSouth;
-            if (h == Cursors.PanSW.Handle)          return CursorTypes.PanSW;
-            if (h == Cursors.PanWest.Handle)        return CursorTypes.PanWest;
-            if (h == Cursors.Hand.Handle)           return CursorTypes.Hand;
-                                                    return CursorTypes.UNKOWNCURSOR;
+            if (h == Cursors.AppStarting.Handle) return CursorTypes.AppStarting;
+            if (h == Cursors.Arrow.Handle) return CursorTypes.Arrow;
+            if (h == Cursors.Cross.Handle) return CursorTypes.Cross;
+            if (h == Cursors.Default.Handle) return CursorTypes.Default;
+            if (h == Cursors.IBeam.Handle) return CursorTypes.IBeam;
+            if (h == Cursors.No.Handle) return CursorTypes.No;
+            if (h == Cursors.SizeAll.Handle) return CursorTypes.SizeAll;
+            if (h == Cursors.SizeNESW.Handle) return CursorTypes.SizeNESW;
+            if (h == Cursors.SizeNS.Handle) return CursorTypes.SizeNS;
+            if (h == Cursors.SizeNWSE.Handle) return CursorTypes.SizeNWSE;
+            if (h == Cursors.SizeWE.Handle) return CursorTypes.SizeWE;
+            if (h == Cursors.UpArrow.Handle) return CursorTypes.UpArrow;
+            if (h == Cursors.WaitCursor.Handle) return CursorTypes.WaitCursor;
+            if (h == Cursors.Help.Handle) return CursorTypes.Help;
+            if (h == Cursors.HSplit.Handle) return CursorTypes.HSplit;
+            if (h == Cursors.VSplit.Handle) return CursorTypes.VSplit;
+            if (h == Cursors.NoMove2D.Handle) return CursorTypes.NoMove2D;
+            if (h == Cursors.NoMoveHoriz.Handle) return CursorTypes.NoMoveHoriz;
+            if (h == Cursors.NoMoveVert.Handle) return CursorTypes.NoMoveVert;
+            if (h == Cursors.PanEast.Handle) return CursorTypes.PanEast;
+            if (h == Cursors.PanNE.Handle) return CursorTypes.PanNE;
+            if (h == Cursors.PanNorth.Handle) return CursorTypes.PanNorth;
+            if (h == Cursors.PanNW.Handle) return CursorTypes.PanNW;
+            if (h == Cursors.PanSE.Handle) return CursorTypes.PanSE;
+            if (h == Cursors.PanSouth.Handle) return CursorTypes.PanSouth;
+            if (h == Cursors.PanSW.Handle) return CursorTypes.PanSW;
+            if (h == Cursors.PanWest.Handle) return CursorTypes.PanWest;
+            if (h == Cursors.Hand.Handle) return CursorTypes.Hand;
+            return CursorTypes.UNKOWNCURSOR;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -396,12 +411,12 @@ namespace Responsive
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         public static extern IntPtr CreateRoundRectRgn
         (
-            int nLeftRect,     // x-coordinate of upper-left corner
-            int nTopRect,      // y-coordinate of upper-left corner
-            int nRightRect,    // x-coordinate of lower-right corner
-            int nBottomRect,   // y-coordinate of lower-right corner
-            int nWidthEllipse, // width of ellipse
-            int nHeightEllipse // height of ellipse
+            Int32 nLeftRect,     // x-coordinate of upper-left corner
+            Int32 nTopRect,      // y-coordinate of upper-left corner
+            Int32 nRightRect,    // x-coordinate of lower-right corner
+            Int32 nBottomRect,   // y-coordinate of lower-right corner
+            Int32 nWidthEllipse, // width of ellipse
+            Int32 nHeightEllipse // height of ellipse
         );
 
         Control frm { get; set; }

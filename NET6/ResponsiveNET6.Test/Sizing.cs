@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Responsive
+﻿namespace ResponsiveNET6
 {
     public delegate void DebugItemChanged(object sender, string name, object value);
     public delegate void Log(object sender, string log);
@@ -52,7 +49,7 @@ namespace Responsive
             menuBarHeight = MenuBarHeight;
             initWidth = frm.Width;
             initHeigth = frm.Height - menuBarHeight;
-
+            
             foreach (Control cntl in frm.Controls)
             {
                 sizeInits.Add(cntl, (cntl.Location, cntl.Size));
@@ -121,7 +118,7 @@ namespace Responsive
             Log($"Sizing does not effect {control.Name}'s Width value.");
 
         }
-        public void FixedHeight(Control control)
+        public void FixedHeight(Control control) 
         {
             FixedHeightControls.Add(control);
             Log($"Sizing does not effect {control.Name}'s Height value.");
@@ -237,7 +234,7 @@ namespace Responsive
                         sizeInits[control].loc.X,
                         control.Location.Y
                         );
-                }
+                } 
                 if (section == MarginSection.Top)
                 {
                     control.Location = new Point(
@@ -261,10 +258,10 @@ namespace Responsive
         private int initWidth { get; set; }
         private int initHeigth { get; set; }
         private int menuBarHeight { get; set; }
-        private Dictionary<Control, (Point loc, Size size)> sizeInits { get; set; } =
+        private Dictionary<Control, (Point loc,Size size)> sizeInits { get; set; } = 
             new Dictionary<Control, (Point loc, Size size)>();
 
-        private Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>> Rules =
+        private Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>> Rules = 
             new Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>>();
 
         private Dictionary<Control, List<MarginSection>> RulesToForm =
@@ -273,14 +270,14 @@ namespace Responsive
         private Dictionary<Control, bool> isLocated =
             new Dictionary<Control, bool>();
 
-        private List<Control> IgnoreControls { get; set; } =
+        private List<Control> IgnoreControls { get; set; } = 
             new List<Control>();
         private List<Control> FixedWidthControls { get; set; } =
            new List<Control>();
         private List<Control> FixedHeightControls { get; set; } =
            new List<Control>();
 
-        private Dictionary<Control, Action<(Control owner, Size CalculatedSize)>> customSizing { get; set; } =
+        private Dictionary<Control, Action<(Control owner, Size CalculatedSize)>> customSizing { get; set; } = 
             new Dictionary<Control, Action<(Control owner, Size CalculatedSize)>>();
 
         private List<string> logQuery = new List<string>();
