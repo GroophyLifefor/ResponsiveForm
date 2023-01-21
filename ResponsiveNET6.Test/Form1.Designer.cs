@@ -82,35 +82,42 @@
             // 
             // button3
             // 
-            this.button3.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(42)))), ((int)(((byte)(94)))));
             this.button3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.button3.FlatAppearance.BorderSize = 0;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Location = new System.Drawing.Point(575, 0);
+            this.button3.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button3.Location = new System.Drawing.Point(650, 0);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 36);
+            this.button3.Size = new System.Drawing.Size(50, 36);
             this.button3.TabIndex = 2;
-            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Text = " ─";
+            this.button3.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
-            this.button2.BackColor = System.Drawing.Color.DarkKhaki;
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(42)))), ((int)(((byte)(94)))));
             this.button2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.button2.FlatAppearance.BorderSize = 0;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Location = new System.Drawing.Point(650, 0);
+            this.button2.Location = new System.Drawing.Point(700, 0);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 36);
+            this.button2.Size = new System.Drawing.Size(50, 36);
             this.button2.TabIndex = 1;
+            this.button2.Text = "▢";
             this.button2.UseVisualStyleBackColor = false;
             // 
             // button4
             // 
-            this.button4.BackColor = System.Drawing.Color.IndianRed;
+            this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(42)))), ((int)(((byte)(94)))));
             this.button4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.button4.FlatAppearance.BorderSize = 0;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Location = new System.Drawing.Point(725, 0);
+            this.button4.Location = new System.Drawing.Point(750, 0);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 36);
+            this.button4.Size = new System.Drawing.Size(50, 36);
             this.button4.TabIndex = 0;
+            this.button4.Text = "✕";
             this.button4.UseVisualStyleBackColor = false;
             // 
             // checkBox1

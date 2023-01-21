@@ -39,7 +39,7 @@ namespace ResponsiveNET6
         public bool LoadButtons(Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false)
         {
             if (frm is not Form) return false;
-            buttons = (MinimalizeBtn, SizingChangeBtn, CloseBtn, JustHideFormWhenClose);
+            buttons = (true, MinimalizeBtn, SizingChangeBtn, CloseBtn, JustHideFormWhenClose);
             var _frm = frm as Form;
             if (!(MinimalizeBtn is null)) MinimalizeBtn.Click += (s, e) => _frm.WindowState = FormWindowState.Minimized;
             if (!(SizingChangeBtn is null)) SizingChangeBtn.Click += (s, e) =>
@@ -152,6 +152,68 @@ namespace ResponsiveNET6
         // Private because we don't recomment while I do better one.
         private void DoSmootherResize() => smoothResize = true;
 
+        public bool AutoColorBrightnessButtons(float brightness = 0.3f)
+        {
+            if (!buttons.isButtonsLoaded) return false;
+            var minDefualt      = buttons.minBtn.BackColor;
+            var minHoverColor   = ChangeColorBrightness(buttons.minBtn.BackColor, brightness);
+            var maxDefualt      = buttons.maxBtn.BackColor;
+            var maxHoverColor   = ChangeColorBrightness(buttons.maxBtn.BackColor, brightness);
+            var closeDefualt    = buttons.closeBtn.BackColor;
+            var closeHoverColor = ChangeColorBrightness(buttons.closeBtn.BackColor, brightness);
+
+            buttons.minBtn.Enter += (_, __) =>
+            {
+                buttons.minBtn.BackColor = minHoverColor;
+            };
+            buttons.minBtn.MouseLeave += (_, __) =>
+            {
+                buttons.minBtn.BackColor = minDefualt;
+            };
+
+            buttons.maxBtn.Enter += (_, __) =>
+            {
+                buttons.maxBtn.BackColor = maxHoverColor;
+            };
+            buttons.maxBtn.MouseLeave += (_, __) =>
+            {
+                buttons.maxBtn.BackColor = maxDefualt;
+            };
+
+            buttons.closeBtn.Enter += (_, __) =>
+            {
+                buttons.closeBtn.BackColor = closeHoverColor;
+            };
+            buttons.closeBtn.MouseLeave += (_, __) =>
+            {
+                buttons.closeBtn.BackColor = closeDefualt;
+            };
+            return true;
+        }
+
+        private Color ChangeColorBrightness(Color color, float correctionFactor)
+        {
+            float red = (float)color.R;
+            float green = (float)color.G;
+            float blue = (float)color.B;
+
+            if (correctionFactor < 0)
+            {
+                correctionFactor = 1 + correctionFactor;
+                red *= correctionFactor;
+                green *= correctionFactor;
+                blue *= correctionFactor;
+            }
+            else
+            {
+                red = (255 - red) * correctionFactor + red;
+                green = (255 - green) * correctionFactor + green;
+                blue = (255 - blue) * correctionFactor + blue;
+            }
+
+            return Color.FromArgb(color.A, (int)red, (int)green, (int)blue);
+        }
+
         private void MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
@@ -180,7 +242,8 @@ namespace ResponsiveNET6
         private Control frm;
         private bool smoothResize = false;
         public Control panel;
-        public (Control minBtn, Control maxBtn, Control closeBtn, bool JustHideFormWhenClose) buttons { get; set; }
+        public (bool isButtonsLoaded, Control minBtn, Control maxBtn, Control closeBtn, bool JustHideFormWhenClose) buttons { get; set; }
+        = (false, null, null, null, false);
         private static List<(Control form, MoveForm moveForm)> isMoveFormed = new List<(Control, MoveForm)>();
     }
 }

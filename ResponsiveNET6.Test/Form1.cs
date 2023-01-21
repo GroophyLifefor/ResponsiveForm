@@ -22,6 +22,7 @@ namespace ResponsiveNET6.Test
 
             MoveForm moveForm = new MoveForm(this, panel2);
             moveForm.LoadButtons(button3, button2, button4);
+            moveForm.AutoColorBrightnessButtons();
 
             ResponsiveNET6.Sizing sizing = new Sizing(this);
             sizing.debugItemChanged += (s, name, value) =>
@@ -56,8 +57,11 @@ namespace ResponsiveNET6.Test
                 watcher.AddOrUpdateItem(name, value.ToString());
             };
             resizer.GenerateResizeLimitsByMoveForm(this, moveForm);
+
+
         }
         Resizer resizer;
+
 
         private void Form1_SizeChanged(object? sender, EventArgs e)
         {
