@@ -237,28 +237,37 @@ namespace Responsive
             {
                 if (section == MarginSection.Left)
                 {
+                    int distance = sizeInits[control].loc.X;
                     control.Location = new Point(
-                        sizeInits[control].loc.X,
+                        distance,
                         control.Location.Y
                         );
                 }
                 if (section == MarginSection.Top)
                 {
+                    int distance = sizeInits[control].loc.Y;
                     control.Location = new Point(
                         control.Location.X,
-                        sizeInits[control].loc.Y
+                        distance
                         );
                 }
                 if (section == MarginSection.Right)
-                    control.Size = new Size(
-                        control.Size.Width + ((mainForm.Size.Width - (control.Location.X + control.Size.Width)) - (initWidth - (sizeInits[control].loc.X + sizeInits[control].size.Width))),
-                        control.Size.Height
+                {
+                    int distance = initWidth - (sizeInits[control].loc.X + sizeInits[control].size.Width);
+                    control.Location = new Point(
+                        mainForm.Width - (distance + control.Size.Width),
+                        control.Location.Y
                         );
+                }
                 if (section == MarginSection.Bottom)
-                    control.Size = new Size(
-                        control.Size.Width,
-                        control.Size.Height + (((mainForm.Size.Height - menuBarHeight) - (control.Location.Y + control.Size.Height)) - (initHeigth - (sizeInits[control].loc.Y + sizeInits[control].size.Height)))
+                {
+                    int distance = (initHeigth + menuBarHeight) - (sizeInits[control].loc.Y + sizeInits[control].size.Height);
+                    control.Location = new Point(
+                        control.Location.X,
+                        mainForm.Height - (distance + control.Size.Height)
                         );
+                }
+                ItemChanged($"{control.Name}'s newLocation", control.Location.ToString());
             }
         }
 

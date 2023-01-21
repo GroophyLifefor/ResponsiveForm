@@ -20,8 +20,8 @@ namespace ResponsiveNET6.Test
 
             this.SizeChanged += Form1_SizeChanged;
 
-            MoveForm moveForm = new MoveForm(this, panel2);
-            moveForm.LoadButtons(button3, button2, button4);
+            MoveForm moveForm = new MoveForm(this, menuBar);
+            moveForm.LoadButtons(minBtn, maxBtn, closeBtn);
             moveForm.AutoColorBrightnessButtons();
 
             ResponsiveNET6.Sizing sizing = new Sizing(this);
@@ -35,21 +35,13 @@ namespace ResponsiveNET6.Test
             };
 
             sizing.DEBUG_GetInitSize();
-            sizing.IgnoreControlWhenSizing(panel2);
-            sizing.CreateNewConnection(panel1, Sizing.MarginSection.Bottom);
-            sizing.CreateNewConnection(label1, panel1, Sizing.MarginSection.Left);
-            sizing.CreateNewConnection(button1, label1, Sizing.MarginSection.Top);
-            sizing.CreateNewConnection(button1, panel1, Sizing.MarginSection.Left);
-            sizing.CreateNewConnection(checkBox1, button1, Sizing.MarginSection.Top);
-            sizing.CreateNewConnection(checkBox1, panel1, Sizing.MarginSection.Left);
-
-            sizing.CreateNewConnection(comboBox1, panel2, Sizing.MarginSection.Top);
-            sizing.CreateNewConnection(comboBox1, panel1, Sizing.MarginSection.Left);
+            sizing.IgnoreControlWhenSizing(menuBar);
+            sizing.CreateNewConnection(checkBox1, Sizing.MarginSection.Right);
+            sizing.CreateNewConnection(checkBox1, Sizing.MarginSection.Bottom);
 
             resizer = new Resizer();
 
             resizer.LoadMouseHook(this);
-            //resizer.DisableAutoRefresh();
             resizer.LoadRoundedBorders();
 
             resizer.DebugItemChanged += (s, name, value) =>
