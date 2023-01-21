@@ -7,16 +7,21 @@ namespace Responsive
 {
     public class MoveForm
     {
-        public static bool isThisControlHasMoveForm(Control form, ref int menuBarHeight)
+        public static bool isThisControlHasMoveForm(Control form, out MoveForm panel)
         {
             var has = isMoveFormed.Where(x => x.form == form);
             if (has.Count() > 0)
             {
-                menuBarHeight = has.First().menuBar.Height;
+                panel = has.First().moveForm;
                 return true;
             }
+
+            panel = null;
             return false;
         }
+
+        public static MoveForm GetEmptyMoveForm() => new MoveForm();
+        private MoveForm() { }
 
         public MoveForm(Control form, Control Panel)
         {
@@ -25,7 +30,7 @@ namespace Responsive
             panel.MouseDown += MouseDown;
             panel.MouseMove += MouseMove;
             panel.MouseUp += MouseUp;
-            isMoveFormed.Add((form, panel));
+            isMoveFormed.Add((form, this));
         }
 
         public bool LoadButtons(Control mainForm, Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false) =>
@@ -34,6 +39,7 @@ namespace Responsive
         public bool LoadButtons(Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false)
         {
             if (frm is not Form) return false;
+            buttons = (MinimalizeBtn, SizingChangeBtn, CloseBtn, JustHideFormWhenClose);
             var _frm = frm as Form;
             if (!(MinimalizeBtn is null)) MinimalizeBtn.Click += (s, e) => _frm.WindowState = FormWindowState.Minimized;
             if (!(SizingChangeBtn is null)) SizingChangeBtn.Click += (s, e) =>
@@ -174,6 +180,7 @@ namespace Responsive
         private Control frm;
         private bool smoothResize = false;
         public Control panel;
-        private static List<(Control form, Control menuBar)> isMoveFormed = new List<(Control, Control)>();
+        public (Control minBtn, Control maxBtn, Control closeBtn, bool JustHideFormWhenClose) buttons { get; set; }
+        private static List<(Control form, MoveForm moveForm)> isMoveFormed = new List<(Control, MoveForm)>();
     }
 }

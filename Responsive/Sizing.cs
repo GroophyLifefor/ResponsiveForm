@@ -48,7 +48,11 @@ namespace Responsive
 
         public Sizing(Control frm, int MenuBarHeight = 39)
         {
-            MoveForm.isThisControlHasMoveForm(frm, ref MenuBarHeight);
+            MoveForm moveForm = MoveForm.GetEmptyMoveForm();
+            if (MoveForm.isThisControlHasMoveForm(frm, out moveForm))
+            {
+                MenuBarHeight = moveForm.panel.Height;
+            }
             menuBarHeight = MenuBarHeight;
             initWidth = frm.Width;
             initHeigth = frm.Height - menuBarHeight;

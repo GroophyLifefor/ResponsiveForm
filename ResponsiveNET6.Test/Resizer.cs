@@ -6,19 +6,18 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using static Syncfusion.WinForms.Core.NativePaint;
 
 namespace ResponsiveNET6
 {
     public class Resizer
     {
-        public event DebugItemChanged debugItemChanged;
+        public event DebugItemChanged DebugItemChanged;
 
         private void ItemChanged(string name, object value)
         {
-            if (debugItemChanged != null)
+            if (DebugItemChanged != null)
             {
-                debugItemChanged(this, name, value);
+                DebugItemChanged(this, name, value);
             }
         }
 
@@ -35,38 +34,38 @@ namespace ResponsiveNET6
             public bool isMinHeight { get { return minHeight != -1; } }
             public bool isMaxHeight { get { return maxHeight != -1; } }
 
-            public bool CanIResizeWidth(Size size) => !(
+            public bool CanIResizeWidth(Size size) =>
+                !(
                 isMinWidth && size.Width < minWidth ||
-                isMaxWidth && size.Width > maxWidth);
+                isMaxWidth && size.Width > maxWidth
+                );
 
-            public bool CanIResizeHeight(Size size) => !(
+            public bool CanIResizeHeight(Size size) =>
+                !(
                 isMinHeight && size.Height < minHeight ||
-                isMaxHeight && size.Height > maxHeight);
+                isMaxHeight && size.Height > maxHeight
+                );
         }
 
-        public void LoadResizeLimits(Control cntl, ResizeLimits limits)
+        public void GenerateResizeLimitsByMoveForm(Control control, MoveForm moveForm)
         {
-            cntl.SizeChanged += (s, e) =>
+            var limits = new ResizeLimits();
+            if (!(moveForm.buttons.minBtn is null))
             {
-                if (cntl is Form)
-                {
-                    if (((Form)cntl).WindowState != FormWindowState.Normal) return;
-                }
-
-                Size size = cntl.Size;
-                if (limits.isMinWidth && size.Width < limits.minWidth) size = new Size(limits.minWidth, size.Height);
-                if (limits.isMaxWidth && size.Width > limits.maxWidth) size = new Size(limits.maxWidth, size.Height);
-                if (limits.isMinHeight && size.Height < limits.minHeight) size = new Size(size.Width, limits.minHeight);
-                if (limits.isMaxHeight && size.Height > limits.maxHeight) size = new Size(size.Width, limits.maxHeight);
-                cntl.Size = size;
-            };
+                limits.minWidth = moveForm.buttons.minBtn.Width + moveForm.buttons.maxBtn.Width + moveForm.buttons.closeBtn.Width + 50;
+            }
+            limits.minHeight = moveForm.panel.Height + 50;
+            LoadResizeLimits(limits);
         }
+
+        public void LoadResizeLimits(ResizeLimits limits) => resizeLimits = limits;
 
         public void LoadMouseHook(Control mw)                   => LoadMouseHook(mw, new ResizeLimits(), 100);
         public void LoadMouseHook(Control mw, int msToRefresh)  => LoadMouseHook(mw, new ResizeLimits(), msToRefresh);
         public void LoadMouseHook(Control mw, ResizeLimits limits, int msToRefresh = 100)
         {
             frm = mw;
+            LoadResizeLimits(limits);
             controlsVisibilityTimer.Start();
 
             for (int i = 0; i < frm.Controls.Count; i++)
@@ -109,7 +108,9 @@ namespace ResponsiveNET6
                         frm.Size.Height
                         );
 
-                    if (limits.CanIResizeWidth(size)) frm.Size = size;
+                    ItemChanged("CanIResizeWidth", resizeLimits.CanIResizeWidth(size));
+
+                    if (resizeLimits.CanIResizeWidth(size)) frm.Size = size;
 
                     if (!frm.Size.Equals(LastestSize))
                     {
@@ -147,7 +148,9 @@ namespace ResponsiveNET6
                         lpPoint.Y - frm.Location.Y + 2
                         );
 
-                    if (limits.CanIResizeHeight(size)) frm.Size = size;
+                    ItemChanged("CanIResizeHeight", resizeLimits.CanIResizeHeight(size));
+
+                    if (resizeLimits.CanIResizeHeight(size)) frm.Size = size;
 
                     if (!frm.Size.Equals(LastestSize))
                     {
@@ -185,8 +188,11 @@ namespace ResponsiveNET6
                         lpPoint.Y - frm.Location.Y + 2
                         );
 
-                    if (limits.CanIResizeWidth(size)) frm.Size = new Size(size.Width, frm.Size.Height);
-                    if (limits.CanIResizeHeight(size)) frm.Size = new Size(frm.Size.Width, size.Height);
+                    ItemChanged("CanIResizeWidth", resizeLimits.CanIResizeWidth(size));
+                    ItemChanged("CanIResizeHeight", resizeLimits.CanIResizeHeight(size));
+
+                    if (resizeLimits.CanIResizeWidth(size)) frm.Size = new Size(size.Width, frm.Size.Height);
+                    if (resizeLimits.CanIResizeHeight(size)) frm.Size = new Size(frm.Size.Width, size.Height);
 
                     if (!frm.Size.Equals(LastestSize))
                     {
@@ -309,9 +315,11 @@ namespace ResponsiveNET6
             }
         }
 
-        public void LoadRoundedBorders()
+        public void LoadRoundedBorders() => LoadRoundedBorders(frm);
+        public void LoadRoundedBorders(Control control)
         {
-            frm.SizeChanged += (_, __) => frm.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, frm.Width, frm.Height, 20, 20));
+            control.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, control.Width, control.Height, 20, 20));
+            control.SizeChanged += (_, __) => control.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, control.Width, control.Height, 20, 20));
         }
 
         public enum CursorTypes
@@ -430,5 +438,6 @@ namespace ResponsiveNET6
         private bool alreadyHidden { get; set; } = false;
         private bool alreadyShown { get; set; } = true;
         private bool AutoRefresh { get; set; } = true;
+        ResizeLimits resizeLimits { get; set; } = new ResizeLimits();
     }
 }

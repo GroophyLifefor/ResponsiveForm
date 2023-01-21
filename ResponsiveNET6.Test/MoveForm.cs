@@ -7,16 +7,21 @@ namespace ResponsiveNET6
 {
     public class MoveForm
     {
-        public static bool isThisControlHasMoveForm(Control form, ref int menuBarHeight)
+        public static bool isThisControlHasMoveForm(Control form, out MoveForm panel)
         {
             var has = isMoveFormed.Where(x => x.form == form);
             if (has.Count() > 0)
             {
-                menuBarHeight = has.First().menuBar.Height;
+                panel = has.First().moveForm;
                 return true;
             }
+
+            panel = null;
             return false;
         }
+
+        public static MoveForm GetEmptyMoveForm() => new MoveForm();
+        private MoveForm() { }
 
         public MoveForm(Control form, Control Panel)
         {
@@ -25,7 +30,7 @@ namespace ResponsiveNET6
             panel.MouseDown += MouseDown;
             panel.MouseMove += MouseMove;
             panel.MouseUp += MouseUp;
-            isMoveFormed.Add((form, panel));
+            isMoveFormed.Add((form, this));
         }
 
         public bool LoadButtons(Control mainForm, Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false) =>
@@ -34,6 +39,7 @@ namespace ResponsiveNET6
         public bool LoadButtons(Control MinimalizeBtn, Control SizingChangeBtn, Control CloseBtn, bool JustHideFormWhenClose = false)
         {
             if (frm is not Form) return false;
+            buttons = (MinimalizeBtn, SizingChangeBtn, CloseBtn, JustHideFormWhenClose);
             var _frm = frm as Form;
             if (!(MinimalizeBtn is null)) MinimalizeBtn.Click += (s, e) => _frm.WindowState = FormWindowState.Minimized;
             if (!(SizingChangeBtn is null)) SizingChangeBtn.Click += (s, e) =>
@@ -52,7 +58,7 @@ namespace ResponsiveNET6
                         double[] Y = GetGradiantNormalized(maxLoc.Y, loc.Y, times);
                         double[] Width = GetGradiantNormalized(maxSize.Width, size.Width, times);
                         double[] Height = GetGradiantNormalized(maxSize.Height, size.Height, times);
-                        for (int i = 0;i < times; i++)
+                        for (int i = 0; i < times; i++)
                         {
                             _frm.Location = new Point((int)X[i], (int)Y[i]);
                             _frm.Size = new Size((int)Width[i], (int)Height[i]);
@@ -109,14 +115,14 @@ namespace ResponsiveNET6
         {
             double A = times;
             double B = end - start;
-            double[] doubles = new double[times+1];
+            double[] doubles = new double[times + 1];
             Func<double, double> formula = new Func<double, double>(X =>
             {
                 // Y = Sqrt(B^2 - ((B^2 * X^2) / A^2))
                 // Sqrt => 49 => 7 (Rooting)
                 return Math.Sqrt(Math.Pow(B, 2) - ((Math.Pow(B, 2) * Math.Pow(X, 2)) / Math.Pow(A, 2)));
             });
-            for (int i = 0; i < times+1; i++)
+            for (int i = 0; i < times + 1; i++)
             {
                 doubles[i] = formula(i) + start;
             }
@@ -141,10 +147,10 @@ namespace ResponsiveNET6
             }
             return doubles;
         }
-#endregion
+        #endregion
 
         // Private because we don't recomment while I do better one.
-        private void DoSmootherResize() => smoothResize = true; 
+        private void DoSmootherResize() => smoothResize = true;
 
         private void MouseDown(object sender, MouseEventArgs e)
         {
@@ -174,6 +180,7 @@ namespace ResponsiveNET6
         private Control frm;
         private bool smoothResize = false;
         public Control panel;
-        private static List<(Control form, Control menuBar)> isMoveFormed = new List<(Control, Control)>();
+        public (Control minBtn, Control maxBtn, Control closeBtn, bool JustHideFormWhenClose) buttons { get; set; }
+        private static List<(Control form, MoveForm moveForm)> isMoveFormed = new List<(Control, MoveForm)>();
     }
 }

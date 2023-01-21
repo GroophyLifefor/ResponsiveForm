@@ -39,23 +39,38 @@ namespace ResponsiveNET6.Test
             sizing.CreateNewConnection(label1, panel1, Sizing.MarginSection.Left);
             sizing.CreateNewConnection(button1, label1, Sizing.MarginSection.Top);
             sizing.CreateNewConnection(button1, panel1, Sizing.MarginSection.Left);
+            sizing.CreateNewConnection(checkBox1, button1, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(checkBox1, panel1, Sizing.MarginSection.Left);
 
-            Resizer resizer = new Resizer();
+            sizing.CreateNewConnection(comboBox1, panel2, Sizing.MarginSection.Top);
+            sizing.CreateNewConnection(comboBox1, panel1, Sizing.MarginSection.Left);
+
+            resizer = new Resizer();
 
             resizer.LoadMouseHook(this);
             //resizer.DisableAutoRefresh();
             resizer.LoadRoundedBorders();
 
-            resizer.debugItemChanged += (s, name, value) =>
+            resizer.DebugItemChanged += (s, name, value) =>
             {
                 watcher.AddOrUpdateItem(name, value.ToString());
             };
+            resizer.GenerateResizeLimitsByMoveForm(this, moveForm);
         }
+        Resizer resizer;
 
         private void Form1_SizeChanged(object? sender, EventArgs e)
         {
             watcher.AddOrUpdateItem("Width", Width.ToString());
             watcher.AddOrUpdateItem("Height", Height.ToString());
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+                resizer.EnableAutoRefresh();
+            else
+                resizer.DisableAutoRefresh();
         }
     }
 }
