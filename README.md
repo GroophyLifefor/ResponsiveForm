@@ -11,6 +11,10 @@ In many reason winforms are not responsive, so i felt compelled to do this.
 
 ```Install-Package Responsive```
 
+---
+---
+---
+
 # Sizing (Responsive/Sizing.cs)
 
 ## Without Initalized.
