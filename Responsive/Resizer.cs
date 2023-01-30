@@ -51,7 +51,7 @@ namespace Responsive
         public void GenerateResizeLimitsByMoveForm(Control control, MoveForm moveForm)
         {
             var limits = new ResizeLimits();
-            if (!(moveForm.buttons.minBtn is null))
+            if (moveForm.buttons.minBtn is not null)
             {
                 limits.minWidth = moveForm.buttons.minBtn.Width + moveForm.buttons.maxBtn.Width + moveForm.buttons.closeBtn.Width + 50;
             }
@@ -61,7 +61,7 @@ namespace Responsive
 
         public void LoadResizeLimits(ResizeLimits limits) => resizeLimits = limits;
 
-        public void LoadMouseHook(Control mw) => LoadMouseHook(mw, new ResizeLimits(), 100);
+        public void LoadMouseHook(Control mw) => LoadMouseHook(mw, new ResizeLimits());
         public void LoadMouseHook(Control mw, int msToRefresh) => LoadMouseHook(mw, new ResizeLimits(), msToRefresh);
         public void LoadMouseHook(Control mw, ResizeLimits limits, int msToRefresh = 100)
         {
@@ -287,16 +287,30 @@ namespace Responsive
                 visibilities[visibilities.ElementAt(i).Key] = visibilities.ElementAt(i).Key.Visible;
 
             for (int i = 0; i < visibilities.Count; i++)
-                visibilities.ElementAt(i).Key.Visible = false;
+            {
+                if (visibilities.ElementAt(i).Key.InvokeRequired)
+                {
+                    visibilities.ElementAt(i).Key.Invoke(new MethodInvoker(() => visibilities.ElementAt(i).Key.Visible = false));
+                }
+                else visibilities.ElementAt(i).Key.Visible = false;
+            }
             alreadyHidden = true;
             alreadyShown = false;
+            frm.SuspendLayout();
         }
 
         private void ShowAllOfControls()
         {
             if (alreadyShown) return;
+            frm.ResumeLayout();
             for (int i = 0; i < visibilities.Count; i++)
-                visibilities.ElementAt(i).Key.Visible = visibilities[visibilities.ElementAt(i).Key];
+            {
+                if (visibilities.ElementAt(i).Key.InvokeRequired)
+                {
+                    visibilities.ElementAt(i).Key.Invoke(new MethodInvoker(() => visibilities.ElementAt(i).Key.Visible = visibilities[visibilities.ElementAt(i).Key]));
+                }
+                else visibilities.ElementAt(i).Key.Visible = visibilities[visibilities.ElementAt(i).Key];
+            }
             alreadyHidden = false;
             alreadyShown = true;
         }

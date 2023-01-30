@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ResponsiveNET6.Test;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static ScintillaNET.Style;
 
 namespace ResponsiveNET6
 {
@@ -58,6 +60,29 @@ namespace ResponsiveNET6
             LoadResizeLimits(limits);
         }
 
+        public void LoadResizeLimits(out ResizeLimits limits, int minWidth = -1, int maxWidth = -1, int minHeight = -1, int maxHeight = -1)
+        {
+            ResizeLimits resizeLimits = new ResizeLimits()
+            {
+                minWidth = minWidth,
+                maxWidth = maxWidth,
+                minHeight = minHeight,
+                maxHeight = maxHeight
+            };
+            LoadResizeLimits(resizeLimits);
+            limits = resizeLimits;
+        }
+        public void LoadResizeLimits(int minWidth = -1, int maxWidth = -1, int minHeight = -1, int maxHeight = -1)
+        {
+            ResizeLimits resizeLimits = new ResizeLimits()
+            {
+                minWidth = minWidth,
+                maxWidth = maxWidth,
+                minHeight = minHeight,
+                maxHeight = maxHeight
+            };
+            LoadResizeLimits(resizeLimits);
+        }
         public void LoadResizeLimits(ResizeLimits limits) => resizeLimits = limits;
 
         public void LoadMouseHook(Control mw)                   => LoadMouseHook(mw, new ResizeLimits(), 100);
@@ -286,16 +311,30 @@ namespace ResponsiveNET6
                 visibilities[visibilities.ElementAt(i).Key] = visibilities.ElementAt(i).Key.Visible;
 
             for (int i = 0; i < visibilities.Count; i++)
-                visibilities.ElementAt(i).Key.Visible = false;
+            {
+                if (visibilities.ElementAt(i).Key.InvokeRequired)
+                {
+                    visibilities.ElementAt(i).Key.Invoke(new MethodInvoker(() => visibilities.ElementAt(i).Key.Visible = false));
+                }
+                else visibilities.ElementAt(i).Key.Visible = false;
+            }
             alreadyHidden = true;
             alreadyShown = false;
+            frm.SuspendLayout();
         }
 
         private void ShowAllOfControls()
         {
             if (alreadyShown) return;
+            frm.ResumeLayout();
             for (int i = 0; i < visibilities.Count; i++)
-                visibilities.ElementAt(i).Key.Visible = visibilities[visibilities.ElementAt(i).Key];
+            {
+                if (visibilities.ElementAt(i).Key.InvokeRequired)
+                {
+                    visibilities.ElementAt(i).Key.Invoke(new MethodInvoker(() => visibilities.ElementAt(i).Key.Visible = visibilities[visibilities.ElementAt(i).Key]));
+                }
+                else visibilities.ElementAt(i).Key.Visible = visibilities[visibilities.ElementAt(i).Key];
+            }
             alreadyHidden = false;
             alreadyShown = true;
         }

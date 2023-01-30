@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <RepositoryUrl>https://github.com/GroophyLifefor/ResponsiveForm</RepositoryUrl>
+    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="H.Hooks" Version="1.6.0" />
@@ -14,5 +15,8 @@
     <Reference Include="System.Windows.Forms">
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\6.0.13\ref\net6.0\System.Windows.Forms.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Azyeb\Scaler\" />
   </ItemGroup>
 </Project>

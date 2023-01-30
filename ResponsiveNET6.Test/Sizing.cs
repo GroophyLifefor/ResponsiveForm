@@ -46,6 +46,12 @@ namespace ResponsiveNET6
             Bottom
         }
 
+        public enum As
+        {
+            Location,
+            Size
+        }
+
         public Sizing(Control frm, int MenuBarHeight = 39)
         {
             MoveForm moveForm = MoveForm.GetEmptyMoveForm();
@@ -99,9 +105,17 @@ namespace ResponsiveNET6
 
         public void CreateNewConnection(Control mainControl, Control connectTo, MarginSection section)
         {
-            var item = (connectTo, new List<(MarginSection Section, int Distance)>(new (MarginSection, int)[]
+            if (section == MarginSection.Left || section == MarginSection.Top)
+                CreateNewConnection(mainControl, connectTo, section, As.Location);
+            else
+                CreateNewConnection(mainControl, connectTo, section, As.Size);
+        }
+
+        public void CreateNewConnection(Control mainControl, Control connectTo, MarginSection section, As _as)
+        {
+            var item = (connectTo, new List<(MarginSection Section, As _as, int Distance)>(new (MarginSection, As, int)[]
             {
-                (section,
+                (section, _as,
                     section == MarginSection.Top
                         ? mainControl.Location.Y - (connectTo.Location.Y + connectTo.Size.Height)
                         : section == MarginSection.Right
@@ -116,7 +130,7 @@ namespace ResponsiveNET6
             Log($"New connection from '{mainControl.Name}' to '{connectTo.Name}' as section '{section}'");
 
             if (Rules.ContainsKey(mainControl)) Rules[mainControl].Add(item);
-            else Rules.Add(mainControl, new List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>(new[] { item }));
+            else Rules.Add(mainControl, new List<(Control connectTo, List<(MarginSection Section, As _as, int Distance)> values)>(new[] { item }));
         }
 
         public void FixedWidth(Control control)
@@ -131,12 +145,12 @@ namespace ResponsiveNET6
             Log($"Sizing does not effect {control.Name}'s Height value.");
         }
 
-        public void CreateNewConnection(Control mainControl, MarginSection ConnectTo)
+        public void CreateNewConnection(Control mainControl, MarginSection ConnectTo, As _as)
         {
             Log($"New connection from '{mainControl.Name}' to 'Form' as section '{ConnectTo}'");
 
-            if (RulesToForm.ContainsKey(mainControl)) RulesToForm[mainControl].Add(ConnectTo);
-            else RulesToForm.Add(mainControl, new List<MarginSection>(new MarginSection[] { ConnectTo }));
+            if (RulesToForm.ContainsKey(mainControl)) RulesToForm[mainControl].Add((ConnectTo, _as));
+            else RulesToForm.Add(mainControl, new List<(MarginSection, As)>(new (MarginSection, As)[] {(ConnectTo, _as)}));
         }
 
         private void Frm_SizeChanged(object sender, EventArgs e)
@@ -175,8 +189,9 @@ namespace ResponsiveNET6
 
             foreach (var rule in RulesToForm)
             {
-                reSizePerLockRule(rule.Key, rule.Value, (Control)sender);
-                Log($"Sizing '{rule.Key.Name}' as Form's ({string.Join(',', rule.Value)}) section.");
+                int distance = -1;
+                reSizePerLockRule(rule.Key, rule.Value, (Control)sender, ref distance);
+                Log($"Sizing '{rule.Key.Name}' as Form's ({string.Join(',', rule.Value)}) section. Distance: {distance}");
             }
 
             foreach (var rule in Rules)
@@ -200,6 +215,7 @@ namespace ResponsiveNET6
             if (_rule.Count() == 0) return;
             var rule = _rule.First();
             Point newLoc = control.Location;
+            Size newSize = control.Size;
             if (isLocated[control]) return;
 
             foreach (var value in rule.Value)
@@ -209,62 +225,89 @@ namespace ResponsiveNET6
                 {
                     reLocate(value.connectTo);
                 }
-                reLocatePerMargin(value, control.Size, ref newLoc);
+                reLocatePerMargin(value, control, ref newLoc, ref newSize);
                 ItemChanged($"{control.Name}'s newLocation", control.Location.ToString());
             }
 
             control.Location = newLoc;
+            control.Size = newSize;
         }
 
-        private void reLocatePerMargin((Control connectTo, List<(MarginSection Section, int Distance)> values) value, Size size, ref Point newLoc)
+        private void reLocatePerMargin((Control connectTo, List<(MarginSection Section, As _as, int Distance)> values) value, Control control, ref Point newLoc, ref Size newSize)
         {
             foreach (var marginRule in value.values)
             {
                 if (marginRule.Section == MarginSection.Left)
+                {
+                    if (marginRule._as == As.Size)
+                        throw new Exception("Margin rule which left, 'as' value can not be Size, try Location.");
                     newLoc = new Point(value.connectTo.Location.X + value.connectTo.Size.Width + marginRule.Distance, newLoc.Y);
+                }
                 if (marginRule.Section == MarginSection.Top)
+                {
+                    if (marginRule._as == As.Size)
+                        throw new Exception("Margin rule which top, 'as' value can not be Size, try Location.");
                     newLoc = new Point(newLoc.X, value.connectTo.Location.Y + value.connectTo.Size.Height + marginRule.Distance);
+                }
                 if (marginRule.Section == MarginSection.Right)
-                    newLoc = new Point(value.connectTo.Location.X - size.Width - marginRule.Distance, newLoc.Y);
+                {
+                    if (marginRule._as == As.Location)  newLoc = new Point(value.connectTo.Location.X - control.Width - marginRule.Distance, newLoc.Y);
+                    else if (marginRule._as == As.Size) newSize = new Size(value.connectTo.Location.X - (marginRule.Distance + control.Location.X), value.connectTo.Size.Height);
+                }
                 if (marginRule.Section == MarginSection.Bottom)
-                    newLoc = new Point(newLoc.X, value.connectTo.Location.Y - size.Height - marginRule.Distance);
+                {
+                    if (marginRule._as == As.Location)  newLoc = new Point(newLoc.X, value.connectTo.Location.Y - control.Height - marginRule.Distance);
+                    else if (marginRule._as == As.Size) newSize = new Size(value.connectTo.Size.Width, value.connectTo.Location.Y - (marginRule.Distance + control.Location.Y));
+                }
             }
         }
 
-        private void reSizePerLockRule(Control control, List<MarginSection> sections, Control mainForm)
+        private void reSizePerLockRule(Control control, List<(MarginSection margin, As _as)> sections, Control mainForm, ref int distance)
         {
             foreach (var section in sections)
             {
-                if (section == MarginSection.Left)
+                if (section.margin == MarginSection.Left)
                 {
-                    int distance = sizeInits[control].loc.X;
+                    distance = sizeInits[control].loc.X;
                     control.Location = new Point(
                         distance,
                         control.Location.Y
                         );
                 }
-                if (section == MarginSection.Top)
+                if (section.margin == MarginSection.Top)
                 {
-                    int distance = sizeInits[control].loc.Y;
+                    distance = sizeInits[control].loc.Y;
                     control.Location = new Point(
                         control.Location.X,
                         distance
                         );
                 }
-                if (section == MarginSection.Right)
+                if (section.margin == MarginSection.Right)
                 {
-                    int distance = initWidth - (sizeInits[control].loc.X + sizeInits[control].size.Width);
-                    control.Location = new Point(
-                        mainForm.Width - (distance + control.Size.Width),
-                        control.Location.Y
+                    distance = initWidth - (sizeInits[control].loc.X + sizeInits[control].size.Width);
+                    if (section._as == As.Location)
+                        control.Location = new Point(
+                            mainForm.Width - (distance + control.Size.Width),
+                            control.Location.Y
+                            );
+                    else //Size
+                        control.Size = new Size(
+                        mainForm.Width - (distance + control.Location.X),
+                        control.Size.Height
                         );
                 }
-                if (section == MarginSection.Bottom)
+                if (section.margin == MarginSection.Bottom)
                 {
-                    int distance = (initHeigth + menuBarHeight) - (sizeInits[control].loc.Y + sizeInits[control].size.Height);
-                    control.Location = new Point(
+                    distance = (initHeigth + menuBarHeight) - (sizeInits[control].loc.Y + sizeInits[control].size.Height);
+                    if (section._as == As.Location)
+                        control.Location = new Point(
                         control.Location.X,
                         mainForm.Height - (distance + control.Size.Height)
+                        );
+                    else //Size
+                        control.Size = new Size(
+                        control.Size.Width,
+                        mainForm.Height - (distance + control.Location.Y)
                         );
                 }
                 ItemChanged($"{control.Name}'s newLocation", control.Location.ToString());
@@ -277,11 +320,11 @@ namespace ResponsiveNET6
         private Dictionary<Control, (Point loc, Size size)> sizeInits { get; set; } =
             new Dictionary<Control, (Point loc, Size size)>();
 
-        private Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>> Rules =
-            new Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, int Distance)> values)>>();
+        private Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, As _as, int Distance)> values)>> Rules =
+            new Dictionary<Control, List<(Control connectTo, List<(MarginSection Section, As _as, int Distance)> values)>>();
 
-        private Dictionary<Control, List<MarginSection>> RulesToForm =
-            new Dictionary<Control, List<MarginSection>>();
+        private Dictionary<Control, List<(MarginSection, As)>> RulesToForm =
+            new Dictionary<Control, List<(MarginSection, As)>>();
 
         private Dictionary<Control, bool> isLocated =
             new Dictionary<Control, bool>();

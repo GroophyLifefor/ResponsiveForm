@@ -155,43 +155,52 @@ namespace ResponsiveNET6
         public bool AutoColorBrightnessButtons(float brightness = 0.3f)
         {
             if (!buttons.isButtonsLoaded) return false;
-            var minDefualt      = buttons.minBtn.BackColor;
-            var minHoverColor   = ChangeColorBrightness(buttons.minBtn.BackColor, brightness);
-            var maxDefualt      = buttons.maxBtn.BackColor;
-            var maxHoverColor   = ChangeColorBrightness(buttons.maxBtn.BackColor, brightness);
-            var closeDefualt    = buttons.closeBtn.BackColor;
-            var closeHoverColor = ChangeColorBrightness(buttons.closeBtn.BackColor, brightness);
-
-            buttons.minBtn.Enter += (_, __) =>
-            {
-                buttons.minBtn.BackColor = minHoverColor;
-            };
-            buttons.minBtn.MouseLeave += (_, __) =>
-            {
-                buttons.minBtn.BackColor = minDefualt;
-            };
-
-            buttons.maxBtn.Enter += (_, __) =>
-            {
-                buttons.maxBtn.BackColor = maxHoverColor;
-            };
-            buttons.maxBtn.MouseLeave += (_, __) =>
-            {
-                buttons.maxBtn.BackColor = maxDefualt;
-            };
-
-            buttons.closeBtn.Enter += (_, __) =>
-            {
-                buttons.closeBtn.BackColor = closeHoverColor;
-            };
-            buttons.closeBtn.MouseLeave += (_, __) =>
-            {
-                buttons.closeBtn.BackColor = closeDefualt;
-            };
+            ColorizeWhenHover(buttons.minBtn, brightness);
+            ColorizeWhenHover(buttons.maxBtn, brightness);
+            ColorizeWhenHover(buttons.closeBtn, brightness);
             return true;
         }
 
-        private Color ChangeColorBrightness(Color color, float correctionFactor)
+        public static void ColorizePanelWhenHover(Panel control, float correctionFactor = 0.3f)
+        {
+            var controlDefualt = control.BackColor;
+            var controlHoverColor = ChangeColorBrightness(control.BackColor, correctionFactor);
+            for (int i = 0;i < control.Controls.Count;i++)
+            {
+                control.Controls[i].MouseHover += (_, __) =>
+                {
+                    control.BackColor = controlHoverColor;
+                };
+                control.Controls[i].MouseLeave += (_, __) =>
+                {
+                    control.BackColor = controlDefualt;
+                };
+            }
+            control.MouseHover += (_, __) =>
+            {
+                control.BackColor = controlHoverColor;
+            };
+            control.MouseLeave += (_, __) =>
+            {
+                control.BackColor = controlDefualt;
+            };
+        }
+
+        public static void ColorizeWhenHover(Control control, float correctionFactor = 0.3f)
+        {
+            var controlDefualt = control.BackColor;
+            var controlHoverColor = ChangeColorBrightness(control.BackColor, correctionFactor);
+            control.MouseHover += (_, __) =>
+            {
+                control.BackColor = controlHoverColor;
+            };
+            control.MouseLeave += (_, __) =>
+            {
+                control.BackColor = controlDefualt;
+            };
+        }
+
+        private static Color ChangeColorBrightness(Color color, float correctionFactor)
         {
             float red = (float)color.R;
             float green = (float)color.G;
