@@ -49,7 +49,7 @@ namespace ResponsiveNET6
                 );
         }
 
-        public void GenerateResizeLimitsByMoveForm(Control control, MoveForm moveForm)
+        public void GenerateResizeLimitsByMoveForm(MoveForm moveForm)
         {
             var limits = new ResizeLimits();
             if (!(moveForm.buttons.minBtn is null))

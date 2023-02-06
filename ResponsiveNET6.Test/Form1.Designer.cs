@@ -262,16 +262,18 @@
             this.helpPanel.Name = "helpPanel";
             this.helpPanel.Size = new System.Drawing.Size(163, 45);
             this.helpPanel.TabIndex = 8;
+            this.helpPanel.Click += new System.EventHandler(this.helpPanel_Click);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label5.Location = new System.Drawing.Point(5, 9);
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label5.Location = new System.Drawing.Point(5, 13);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(143, 25);
+            this.label5.Size = new System.Drawing.Size(155, 20);
             this.label5.TabIndex = 2;
-            this.label5.Text = "🕮       Get Help";
+            this.label5.Text = "🕮       Show mermaid";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // scintilla
             // 

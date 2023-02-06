@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using Responsive.Azyeb.Mermaid;
 using System.Drawing;
 
 namespace Responsive.Azyeb
@@ -57,10 +58,19 @@ namespace Responsive.Azyeb
             );
 
         public static ResizeLimits GenerateResizeLimitsByHeader(Header header)
-            => new ResizeLimits()
+        {
+            MermaidBuilder.AddConnection("Scaler", "Header", "Generate resizeLimits by header", true);
+            return new ResizeLimits()
             {
                 minWidth = header.HeaderWidth,
                 minHeight = header.HeaderHeight
             };
+        }
+
+        public override string ToString()
+        {
+            string text = $" {(isMinWidth ? $"minWidth: {minWidth}, " : "")}{(isMinHeight ? $"minHeight: {minHeight}, " : "")}{(isMaxWidth ? $"maxWidth: {maxWidth}, " : "")}{(isMaxHeight ? $"maxHeight: {maxHeight}, " : "")}".TrimEnd(',', ' ');
+            return $"{{{text}}}";
+        }
     }
 }

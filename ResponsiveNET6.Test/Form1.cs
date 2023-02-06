@@ -6,6 +6,8 @@ using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using Markdig;
 using Responsive.Azyeb;
+using Responsive.Azyeb.Mermaid;
+using CliWrap;
 
 namespace ResponsiveNET6.Test
 {
@@ -20,6 +22,13 @@ namespace ResponsiveNET6.Test
         Size initSize;
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            MermaidBuilder.TextChanged += (_, __) =>
+            {
+                scintilla.Text = MermaidBuilder.GetMermaid();
+            };
+            MermaidBuilder.Disable();
+
             var responsivePage = new ResponsivePage(this);
             responsivePage
                 .CreateNewHeader(this, responsivePage, out var header)
@@ -31,7 +40,10 @@ namespace ResponsiveNET6.Test
                 .CreateNewScaler(this, responsivePage, out var scaler)
                     .LoadResizeLimits(ResizeLimits.GenerateResizeLimitsByHeader(header))
                     .LoadMouseHook()
-                    .DebugItemChanged += (s, name, value) => {watcher.AddOrUpdateItem(name, value.ToString());};
+                    .DebugItemChanged += 
+                    (s, name, value) => {
+                        watcher.AddOrUpdateItem(name, value);
+                    };
 
             responsivePage.ControlCustomBorder.LoadRoundedBorders(this);
 
@@ -106,7 +118,9 @@ namespace ResponsiveNET6.Test
             //resizer.LoadRoundedBorders(fintoryImage);
             //resizer.LoadRoundedBorders(createAPublicNotePanel);
             //resizer.LoadRoundedBorders(helpPanel);
-            HotReload();
+
+
+            //HotReload();
         }
         Resizer resizer;
 
@@ -144,7 +158,8 @@ namespace ResponsiveNET6.Test
         private int maxLineNumberCharLength;
         private void scintilla_TextChanged(object sender, EventArgs e)
         {
-            HotReload();
+            //HotReload();
+            ShowMermaid(false);
             // Did the number of characters in the line number display change?
             // i.e. nnn VS nn, or nnnn VS nn, etc...
             var maxLineNumberCharLength = scintilla.Lines.Count.ToString().Length;
@@ -184,6 +199,30 @@ namespace ResponsiveNET6.Test
                 resizer.EnableAutoRefresh();
             else
                 resizer.DisableAutoRefresh();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+            ShowMermaid();
+        }
+
+        private void ShowMermaid(bool show = true)
+        {
+            string mermaidPath = Path.Combine(Path.GetTempPath(), "mermaid.mmd");
+            File.WriteAllText(mermaidPath, scintilla.Text);
+
+            Cli.Wrap($"mmdc")
+                .WithWorkingDirectory(Path.GetTempPath())
+                .WithArguments("-i mermaid.mmd -o output.svg")
+                .ExecuteAsync();
+
+            Groophy.CmdFunc.CmdFunc cmd = new Groophy.CmdFunc.CmdFunc(false, Path.GetTempPath());
+            if (show) cmd.Input("output.svg");
+        }
+
+        private void helpPanel_Click(object sender, EventArgs e)
+        {
+            ShowMermaid();
         }
     }
 }

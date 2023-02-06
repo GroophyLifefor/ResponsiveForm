@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using Responsive.Azyeb.Mermaid;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -44,15 +45,19 @@ namespace Responsive.Azyeb
         public Scaler LoadResizeLimits(ResizeLimits limits)
         {
             this.resizeLimits = limits;
+            MermaidBuilder.AddConnection("Scaler", "ResponsivePage", $"New ResizeLimits as {limits.ToString()}");
             return this;
         } 
         
         public Scaler LoadMouseHook()
         {
             controlsVisibilityTimer.Start();
+            this.ResponsivePage.ControlVisibilities.PushStopwatchMillisecond(controlsVisibilityTimer.Elapsed.TotalMilliseconds);
             lastestSize = frm.Size;
-            
-            
+            bool re_scaling = false;
+            MermaidBuilder.AddConnection("Scaler", "ResponsivePage", "LoadMouseHook");
+
+
             MouseHandle.AddUpRule(new System.Action(() =>
             {
                 frm.Size = frm.Size;
@@ -72,26 +77,42 @@ namespace Responsive.Azyeb
                 }
                 if (isHorizontalResize)
                 {
+                    // Keep cursor SizeWE while scaling horizontal
                     lock (frm.Cursor) CursorHandle.TryChangeCursor(Cursors.SizeWE);
 
+                    // Calculate new size
                     Size size = new Size(
                         lpPoint.X - frm.Location.X + 2,
                         frm.Size.Height
                         );
 
-                    ItemChanged("CanIResizeWidth", this.resizeLimits.CanIResizeWidth(size));
+                    // MermaidBuilder
+                    if (!re_scaling)
+                    {
+                        re_scaling = true;
+                        MermaidBuilder.AddConnection("Scaler", "ResponsivePage", $"Scale start size: {frm.Size}");
+                    }
 
+                    // Update Delegate
+                    ItemChanged("CanIResizeWidth", this.resizeLimits.CanIResizeWidth(size));
+                    ItemChanged("AverageMs", this.ResponsivePage.ControlVisibilities.GetQuery().Average());
+
+                    // If resizelimits are okay, resize it.
                     if (this.resizeLimits.CanIResizeWidth(size)) frm.Size = size;
 
                     if (!frm.Size.Equals(lastestSize))
                     {
-                        if (autoRefresh) controlsVisibilityTimer.Restart();
+                        if (autoRefresh)
+                        {
+                            this.ResponsivePage.ControlVisibilities.PushStopwatchMillisecond(controlsVisibilityTimer.Elapsed.TotalMilliseconds);
+                            controlsVisibilityTimer.Restart();
+                        }
                         lastestSize = frm.Size;
                     }
 
                     if (autoRefresh)
                     {
-                        if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh)
+                        if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh && this.ResponsivePage.ControlVisibilities.GetQuery().Average() < 14)
                             this.ResponsivePage.ControlVisibilities.ShowAllOfControls();
                         else
                             this.ResponsivePage.ControlVisibilities.HideAllOfControls();
@@ -119,19 +140,30 @@ namespace Responsive.Azyeb
                         lpPoint.Y - frm.Location.Y + 2
                         );
 
+                    if (!re_scaling)
+                    {
+                        re_scaling = true;
+                        MermaidBuilder.AddConnection("Scaler", "ResponsivePage", $"Scale start size: {frm.Size}");
+                    }
+
                     ItemChanged("CanIResizeHeight", this.resizeLimits.CanIResizeHeight(size));
+                    ItemChanged("AverageMs", this.ResponsivePage.ControlVisibilities.GetQuery().Average());
 
                     if (this.resizeLimits.CanIResizeHeight(size)) frm.Size = size;
 
                     if (!frm.Size.Equals(lastestSize))
                     {
-                        if (autoRefresh) controlsVisibilityTimer.Restart();
+                        if (autoRefresh)
+                        {
+                            this.ResponsivePage.ControlVisibilities.PushStopwatchMillisecond(controlsVisibilityTimer.Elapsed.TotalMilliseconds);
+                            controlsVisibilityTimer.Restart();
+                        }
                         lastestSize = frm.Size;
                     }
 
                     if (autoRefresh)
                     {
-                        if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh)
+                        if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh && this.ResponsivePage.ControlVisibilities.GetQuery().Average() < 14)
                             this.ResponsivePage.ControlVisibilities.ShowAllOfControls();
                         else
                             this.ResponsivePage.ControlVisibilities.HideAllOfControls();
@@ -159,21 +191,32 @@ namespace Responsive.Azyeb
                         lpPoint.Y - frm.Location.Y + 2
                         );
 
+                    if (!re_scaling)
+                    {
+                        re_scaling = true;
+                        MermaidBuilder.AddConnection("Scaler", "ResponsivePage", $"Scale start size: {frm.Size}");
+                    }
+
                     ItemChanged("CanIResizeWidth", this.resizeLimits.CanIResizeWidth(size));
                     ItemChanged("CanIResizeHeight", this.resizeLimits.CanIResizeHeight(size));
+                    ItemChanged("AverageMs", this.ResponsivePage.ControlVisibilities.GetQuery().Average());
 
                     if (this.resizeLimits.CanIResizeWidth(size)) frm.Size = new Size(size.Width, frm.Size.Height);
                     if (this.resizeLimits.CanIResizeHeight(size)) frm.Size = new Size(frm.Size.Width, size.Height);
 
                     if (!frm.Size.Equals(lastestSize))
                     {
-                        if (autoRefresh) controlsVisibilityTimer.Restart();
+                        if (autoRefresh)
+                        {
+                            this.ResponsivePage.ControlVisibilities.PushStopwatchMillisecond(controlsVisibilityTimer.Elapsed.TotalMilliseconds);
+                            controlsVisibilityTimer.Restart();
+                        }
                         lastestSize = frm.Size;
                     }
 
                     if (autoRefresh)
                     {
-                        if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh)
+                        if (controlsVisibilityTimer.Elapsed.TotalMilliseconds > msToRefresh && this.ResponsivePage.ControlVisibilities.GetQuery().Average() < 14)
                             this.ResponsivePage.ControlVisibilities.ShowAllOfControls();
                         else
                             this.ResponsivePage.ControlVisibilities.HideAllOfControls();
@@ -242,6 +285,12 @@ namespace Responsive.Azyeb
                     this.ResponsivePage.ControlVisibilities.ShowAllOfControls();
                 }
 
+                if (re_scaling)
+                {
+                    re_scaling = false;
+                    MermaidBuilder.AddConnection("Scaler", "ResponsivePage", $"Scale end size: {frm.Size}");
+                }
+
             });
             return this;
 
@@ -252,6 +301,7 @@ namespace Responsive.Azyeb
         {
             autoRefresh = false;
             ItemChanged("AutoRefresh", autoRefresh);
+            MermaidBuilder.AddConnection("Scaler", "ResponsivePage", "AutoRefresh Disabled");
             return this;
         }
 
@@ -259,11 +309,13 @@ namespace Responsive.Azyeb
         {
             autoRefresh = true;
             ItemChanged("AutoRefresh", autoRefresh);
+            MermaidBuilder.AddConnection("Scaler", "ResponsivePage", "AutoRefresh Enabled");
             return this;
         }
 
         public Scaler UpdateAutoRefreshMillisecond(int ms)
         {
+            MermaidBuilder.AddConnection("Scaler", "ResponsivePage", $"AutoRefreshMillisecond Updated {msToRefresh} to {ms}");
             msToRefresh = ms;
             ItemChanged("AutoRefreshMillisecond", ms);
             return this;
@@ -284,6 +336,7 @@ namespace Responsive.Azyeb
         public Stopwatch controlsVisibilityTimer { get; set; } = new Stopwatch();
         private Size lastestSize { get; set; }
         private bool autoRefresh { get; set; } = true;
+        public List<Size> sizes = new List<Size>();
 
         #endregion
     }

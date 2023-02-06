@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using Responsive.Azyeb.Mermaid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,7 @@ namespace Responsive.Azyeb
             alreadyHidden = true;
             alreadyShown = false;
             frm.SuspendLayout();
+            MermaidBuilder.AddConnection("ResponsivePage", "ResponsivePage", $"Hide controls");
         }
 
         /// <summary>
@@ -81,11 +83,18 @@ namespace Responsive.Azyeb
             }
             alreadyHidden = false;
             alreadyShown = true;
+            MermaidBuilder.AddConnection("ResponsivePage", "ResponsivePage", $"Show controls which will hidden by ResponsivePage");
         }
+
+        public void PushStopwatchMillisecond(double ms)
+            => query.Push(ms);
+
+        public List<double> GetQuery() => query.GetValues();
 
         public Control frm { get; set; }
         private Dictionary<Control, bool> visibilities { get; set; } = new Dictionary<Control, bool>();
         private bool alreadyHidden { get; set; } = false;
         private bool alreadyShown { get; set; } = true;
+        private Query<double> query { get; set; } = new Query<double>(50);
     }
 }

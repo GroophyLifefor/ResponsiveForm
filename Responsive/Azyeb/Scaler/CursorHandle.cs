@@ -27,9 +27,10 @@ namespace Responsive.Azyeb
             {
                 try
                 {
-                    if (Form.ActiveForm != null)
+                    var activeForm = Form.ActiveForm;
+                    if (activeForm is not null)
                     {
-                        Form.ActiveForm.Cursor = cursor;
+                        activeForm.Cursor = cursor;
                         break;
                     }
                 }

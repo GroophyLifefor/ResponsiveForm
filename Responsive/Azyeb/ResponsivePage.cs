@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+using Responsive.Azyeb.Mermaid;
 using System.Windows.Forms;
 
 namespace Responsive.Azyeb
@@ -32,16 +33,26 @@ namespace Responsive.Azyeb
         #endregion
 
         #region Public methots
-        public Header CreateNewHeader(Control form,ResponsivePage responsivePage) => new Header(responsivePage, form);
+        public Header CreateNewHeader(Control form, ResponsivePage responsivePage)
+        {
+            MermaidBuilder.AddConnection("ResponsivePage", "Header", "New Header");
+            return new Header(responsivePage, form);
+        }
         public Header CreateNewHeader(Control form, ResponsivePage responsivePage, out Header header)
         {
             header = new Header(responsivePage, form);
+            MermaidBuilder.AddConnection("ResponsivePage", "Header", "New Header");
             return header;
         }
-        public Scaler CreateNewScaler(Control form,ResponsivePage responsivePage) => new Scaler(responsivePage, form);
+        public Scaler CreateNewScaler(Control form, ResponsivePage responsivePage)
+        {
+            MermaidBuilder.AddConnection("ResponsivePage", "Scaler", "New Scaler");
+            return new Scaler(responsivePage, form);
+        }
         public Scaler CreateNewScaler(Control form, ResponsivePage responsivePage, out Scaler scaler)
         {
             scaler = new Scaler(responsivePage, form);
+            MermaidBuilder.AddConnection("ResponsivePage", "Scaler", "New Scaler");
             return scaler;
         }
 

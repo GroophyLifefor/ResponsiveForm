@@ -243,7 +243,7 @@ namespace Responsive
         private Control frm;
         private bool smoothResize = false;
         public Control panel;
-        public (bool isButtonsLoaded, Control minBtn, Control maxBtn, Control closeBtn, bool JustHideFormWhenClose) buttons { get; set; }
+        public (bool isButtonsLoaded, Control? minBtn, Control? maxBtn, Control? closeBtn, bool JustHideFormWhenClose) buttons { get; set; }
         = (false, null, null, null, false);
         private static List<(Control form, MoveForm moveForm)> isMoveFormed = new List<(Control, MoveForm)>();
     }

@@ -13,6 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+using Responsive.Azyeb.Mermaid;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -31,9 +35,7 @@ namespace Responsive.Azyeb
         }
 
         /// <summary>
-        /// A special mouse handle system allows you to move your application with a left click of the mouse.
-        ///
-        /// I recommend to use LoadButtons before AddMoveHandler.
+        /// A special mouse handle system allows you to move your application with a left click of the mouse.,
         /// </summary>
         /// <param name="frm">Application as which big possible 'Form'</param>
         /// <param name="control">MenuBar item as which big possible a top dock panel</param>
@@ -42,7 +44,7 @@ namespace Responsive.Azyeb
         public Header AddMoveHandler(Control frm, Control control, bool addChildControls = false)
         {
             headerPanels.Add(control);
-            if (control == _buttons.MinimalizeBtn || control == _buttons.MaximizeBtn || control == _buttons.CloseBtn) return this;
+            MermaidBuilder.AddConnection("Header", "ResponsivePage", $"AddMoveHandler '{control.Name}', {addChildControls}");
             
             // Inline varriables for movement
             bool arrastando = false;
@@ -52,11 +54,16 @@ namespace Responsive.Azyeb
             {
                 // if is left start to moving by defualt location 
                 if (e.Button != MouseButtons.Left) return;
+                // if it is will be a helpbar item won't able to be move handler
+                if ((s as Control) == _buttons.MinimalizeBtn || (s as Control) == _buttons.MaximizeBtn || (s as Control) == _buttons.CloseBtn) return;
                 arrastando = true;
                 pontoinicial = new Point(e.X, e.Y);
+                MermaidBuilder.AddConnection("Header", "ResponsivePage", $"Header moving form start location: {frm.Location}");
             };
             control.MouseMove += (s, e) =>
             {
+                // if it is will be a helpbar item won't able to be move handler
+                if ((s as Control) == _buttons.MinimalizeBtn || (s as Control) == _buttons.MaximizeBtn || (s as Control) == _buttons.CloseBtn) return;
                 // if is left click movement arrastando will be true
                 if (arrastando)
                 {
@@ -70,8 +77,14 @@ namespace Responsive.Azyeb
             };
             control.MouseUp += (s, e) =>
             {
+                // if it is will be a helpbar item won't able to be move handler
+                if ((s as Control) == _buttons.MinimalizeBtn || (s as Control) == _buttons.MaximizeBtn || (s as Control) == _buttons.CloseBtn) return;
                 // reset varriable
-                if (arrastando) arrastando = false;
+                if (arrastando)
+                {
+                    arrastando = false;
+                    MermaidBuilder.AddConnection("Header", "ResponsivePage", $"Header moving form end location: {frm.Location}");
+                }
             };
             if (addChildControls)
             {
@@ -100,6 +113,7 @@ namespace Responsive.Azyeb
         public Header LoadButtons(Form frm, Control? MinimalizeBtn, Control? MaximizeBtn, Control? CloseBtn, bool JustHideFormWhenClose = false)
         {
             _buttons = (MinimalizeBtn, MaximizeBtn, CloseBtn);
+            MermaidBuilder.AddConnection("Header", "ResponsivePage", "LoadButtons");
 
             if (MinimalizeBtn is not null) MinimalizeBtn.Click += (s, e) =>
             {
@@ -226,15 +240,27 @@ namespace Responsive.Azyeb
         /// <summary>
         /// Toggles smoother the WindowState of the form.
         /// </summary>
-        public void EnableSmootherWindowState() => isSmootherWindowState = true;
+        public void EnableSmootherWindowState()
+        {
+            MermaidBuilder.AddConnection("Header", "ResponsivePage", "SmootherWindowState Enabled");
+            isSmootherWindowState = true;
+        }
         /// <summary>
         /// Disable toggles smoother the WindowState of the form.
         /// </summary>
-        public void DisableSmootherWindowState() => isSmootherWindowState = false;
+        public void DisableSmootherWindowState()
+        {
+            MermaidBuilder.AddConnection("Header", "ResponsivePage", "SmootherWindowState Disabled");
+            isSmootherWindowState = false;
+        }
         /// <summary>
         /// It allows to change the transitions with all their details.
         /// </summary>
-        public void ChangeSmootherWindowStateConfiguration(WindowStateConfiguration wsc) => WindowStateConfiguration = wsc;
+        public void ChangeSmootherWindowStateConfiguration(WindowStateConfiguration wsc)
+        {
+            MermaidBuilder.AddConnection("Header", "ResponsivePage", "SmootherWindowState Changed");
+            WindowStateConfiguration = wsc;
+        }
         #endregion
 
         #region Private methots
